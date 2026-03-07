@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Brew FAE Character Tool</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --bg: #f4f4f9;
+            --card-bg: #fff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 10px;
+            font-size: 0.85rem;
+        }
+
+        #app {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            margin: 0.8rem 0 0.4rem 0;
+            color: #555;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .builder-card {
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px dashed #ccc;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            color: #7f8c8d;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.85rem;
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .approach-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .approach-row input {
+            width: 45px;
+            text-align: center;
+            padding: 2px;
+        }
+
+        .stress-track {
+            display: flex;
+            gap: 8px;
+            margin: 5px 0;
+        }
+
+        .stress-box {
+            border: 2px solid var(--primary);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .stress-box.checked {
+            background: var(--primary);
+            color: white;
+        }
+
+        .list-item {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 4px;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        button {
+            cursor: pointer;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        button.danger {
+            background: var(--danger);
+            width: 28px;
+        }
+
+        /* Print Logic */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            #app {
+                box-shadow: none;
+                border: none;
+                max-width: 100% !important;
+                width: 100%;
+                padding: 0;
+            }
+
+            .no-print,
+            .builder-card select,
+            .builder-card button,
+            .no-print-ui,
+            button {
+                display: none !important;
+            }
+
+            .builder-card {
+                border: none;
+                padding: 0;
+                background: none !important;
+            }
+
+            input,
+            textarea {
+                border: none !important;
+                padding: 2px 0 !important;
+                background: transparent !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .approach-row {
+                border-bottom: 1px solid #eee;
+                border-left: 2px solid var(--accent) !important;
+                background: none !important;
+            }
+
+            #json-output {
+                display: none;
+            }
+
+            textarea {
+                height: auto;
+                overflow: visible;
+            }
+        }
+
+        /* @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        } */
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h1>Fate Accelerated Character Sheet</h1>
+            <div id="save-status" class="no-print" style="font-size: 0.7rem; color: #7f8c8d;"></div>
+        </header>
+
+        <div class="dashboard">
+            <section>
+                <h2>Identity</h2>
+                <div class="form-group">
+                    <label>Character Name</label>
+                    <input type="text" id="ui-Name" oninput="updateHero('Name', this.value)" placeholder="Name">
+                </div>
+
+                <div class="form-group">
+                    <label>High Concept</label>
+                    <div class="builder-card no-print" style="background: #f0f7ff; border-color: #3498db;">
+                        <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                            <select id="guide-adj" onchange="buildConcept()">
+                                <option value="">(Adj)</option>
+                                <option value="Eldritch">Eldritch</option>
+                                <option value="Stalwart">Stalwart</option>
+                                <option value="Noble">Noble</option>
+                            </select>
+                            <select id="guide-race" onchange="buildConcept()">
+                                <option value="">(Race)</option>
+                                <option value="Human">Human</option>
+                                <option value="Elven">Elven</option>
+                                <option value="Dwarven">Dwarven</option>
+                            </select>
+                            <select id="guide-class" onchange="buildConcept()">
+                                <option value="">(Class)</option>
+                                <option value="Fighter">Fighter</option>
+                                <option value="Sorcerer">Sorcerer</option>
+                                <option value="Rogue">Rogue</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" id="ui-HighConcept" placeholder="High Concept..."
+                        oninput="updateHero('HighConcept', this.value)">
+                </div>
+
+                <div class="form-group">
+                    <label>Trouble</label>
+                    <div class="builder-card no-print" style="background: #fff5f5; border-color: #e74c3c;">
+                        <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+                            <select id="trouble-prefix" onchange="buildTrouble()" style="flex:1">
+                                <option value="">(Template)</option>
+                                <option value="Hunted by">Hunted by...</option>
+                                <option value="Debt to">Debt to...</option>
+                                <option value="Too">Too [X] for my own good</option>
+                            </select>
+                            <input type="text" id="trouble-suffix" placeholder="Details..." oninput="buildTrouble()"
+                                style="flex:1">
+                        </div>
+                    </div>
+                    <input type="text" id="ui-Trouble" placeholder="Trouble..."
+                        oninput="updateHero('Trouble', this.value)">
+                </div>
+
+                <h3>Aspects</h3>
+                <div class="builder-card no-print" style="background: #f0fff4; border-color: #27ae60;">
+                    <div style="display: flex; gap: 4px;">
+                        <select id="aspect-template" style="flex:1">
+                            <option value="">(Type)</option>
+                            <option value="Member of">Member of...</option>
+                            <option value="Wielder of">Wielder of...</option>
+                        </select>
+                        <input type="text" id="aspect-detail" placeholder="Detail..." style="flex:1">
+                        <button onclick="addGuidedAspect()" style="background: var(--success);">+</button>
+                    </div>
+                </div>
+                <div id="aspect-list"></div>
+                <button onclick="addListItem('Aspects')" class="no-print"
+                    style="width:100%; margin-top:5px; background: #95a5a6;">+ Add Custom Aspect</button>
+            </section>
+
+            <section>
+                <h2>Approaches</h2>
+                <div id="approach-list" class="approach-grid"></div>
+                <div><i>Default Score Values: 3, 2, 2, 1, 1, 0</i></div>
+
+                <h2>Vitality</h2>
+                <div style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div style="flex:1">
+                        <label>Stress Track</label>
+                        <div id="stress-track" class="stress-track"></div>
+                    </div>
+                    <div style="width: 50px;">
+                        <label>Refresh</label>
+                        <input type="number" id="ui-Refresh" value="3" onchange="updateHero('Refresh', this.value)">
+                    </div>
+                    <div style="width: 50px;">
+                        <label>Fate</label>
+                        <input type="number" id="ui-FatePoints" value="3"
+                            onchange="updateHero('FatePoints', this.value)">
+                    </div>
+                </div>
+
+                <h2>Notes</h2>
+                <textarea id="ui-Notes" rows="12" placeholder="Session notes, gear, etc..."
+                    oninput="updateHero('Notes', this.value)"></textarea>
+
+                <div class="no-print" style="margin-top:10px;">
+                    <label>Raw Data Preview</label>
+                    <pre id="json-output"
+                        style="background: #2d3436; color: #dfe6e9; padding: 8px; border-radius: 4px; font-size: 0.7rem; max-height: 80px; overflow: auto;"></pre>
+                </div>
+            </section>
+
+            <section>
+                <h2>Stunts</h2>
+                <div class="builder-card no-print" style="background: #fdfaf0; border-color: #f39c12;">
+                    <select id="stunt-type" onchange="toggleStuntUI()">
+                        <option value="bonus">Bonus (+2)</option>
+                        <option value="special">Session Power</option>
+                    </select>
+                    <div style="font-size: 0.8rem; margin: 5px 0;">
+                        Because I <input type="text" id="stunt-reason" placeholder="..." style="width: 100px;">
+                        <span id="stunt-ui-bonus">, I get +2 to <select id="stunt-approach"
+                                style="width: 80px;"></select> when I <input type="text" id="stunt-circumstance"
+                                style="width: 80px;"></span>
+                        <span id="stunt-ui-special" style="display:none">, once per session I can <input type="text"
+                                id="stunt-action" style="width: 120px;"></span>
+                    </div>
+                    <button onclick="addGuidedStunt()" style="width:100%; background: #f39c12;">Add Stunt</button>
+                </div>
+                <div id="stunt-list"></div>
+                <button onclick="addListItem('Stunts')" class="no-print"
+                    style="width:100%; margin-top:5px; background: #95a5a6;">+ Add Custom Stunt</button>
+
+                <h2>Consequences</h2>
+                <div class="form-group">
+                    <input type="text" id="ui-Mild" placeholder="Mild (2)"
+                        oninput="updateConsequence('Mild', this.value)" style="margin-bottom:4px">
+                    <input type="text" id="ui-Moderate" placeholder="Moderate (4)"
+                        oninput="updateConsequence('Moderate', this.value)" style="margin-bottom:4px">
+                    <input type="text" id="ui-Severe" placeholder="Severe (6)"
+                        oninput="updateConsequence('Severe', this.value)">
+                </div>
+
+                <div class="no-print" style="background:#eee; padding: 10px; border-radius: 6px; margin-top: 15px;">
+                    <div class="btn-group">
+                        <button onclick="saveHero()">Save</button>
+                        <button class="secondary" onclick="loadHero()">Load</button>
+                        <button class="success" onclick="window.print()">Print PDF</button>
+                        <button class="secondary" onclick="downloadJSON()">Download JSON</button>
+                    </div>
+                    <!--
+                    <label style="margin-top:8px; text-transform: none; display: flex; align-items: center; gap: 5px;">
+                        <input type="checkbox" id="auto-save" style="width:auto"
+                            onchange="toggleAutoSave(this.checked)"> Auto-Save
+                    </label>
+                    -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        class BrewConfig {
+            constructor(Name, Approaches) {
+                this.Name = Name ?? "Fantasy";
+                this.Approaches = Approaches ?? ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"];
+            }
+        }
+
+        class FAECharacter {
+            constructor(config) {
+                this.Name = ""; this.HighConcept = ""; this.Trouble = "";
+                this.Aspects = []; this.Stunts = []; this.Notes = "";
+                this.Refresh = 3; this.FatePoints = 3;
+                this.Stress = [false, false, false];
+                this.Consequences = { Mild: "", Moderate: "", Severe: "" };
+                this.Config = config;
+                this.ApproachValues = {};
+                this.Config.Approaches.forEach(a => this.ApproachValues[a] = 0);
+            }
+        }
+
+        const MyConfig = new BrewConfig();
+        let currentHero = new FAECharacter(MyConfig);
+        const STORAGE_KEY = "BrewFAE_Save";
+        let autoSaveInterval = null;
+
+        function init() {
+            renderApproaches(); renderLists(); renderStress();
+            populateStuntApproaches(); updateJSON();
+        }
+
+        function renderApproaches() {
+            document.getElementById('approach-list').innerHTML = currentHero.Config.Approaches.map(appr => `
+            <div class="approach-row">
+                <label style="color:#333; margin:0; text-transform:none;">${appr}</label>
+                <input type="number" value="${currentHero.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach('${appr}', this.value)">
+            </div>
+        `).join('');
+        }
+
+        function renderStress() {
+            document.getElementById('stress-track').innerHTML = currentHero.Stress.map((checked, i) => `
+            <div class="stress-box ${checked ? 'checked' : ''}" onclick="toggleStress(${i})">${i + 1}</div>
+        `).join('');
+        }
+
+        function renderLists() {
+            document.getElementById('aspect-list').innerHTML = currentHero.Aspects.map((val, i) => `
+            <div class="list-item">
+                <input type="text" value="${val}" oninput="updateListItem('Aspects', ${i}, this.value)">
+                <button class="danger no-print" onclick="removeListItem('Aspects', ${i})">×</button>
+            </div>
+        `).join('');
+
+            document.getElementById('stunt-list').innerHTML = currentHero.Stunts.map((val, i) => `
+            <div class="list-item">
+                <input type="text" value="${val}" oninput="updateListItem('Stunts', ${i}, this.value)">
+                <button class="danger no-print" onclick="removeListItem('Stunts', ${i})">×</button>
+            </div>
+        `).join('');
+        }
+
+        function updateHero(f, v) { currentHero[f] = v; updateJSON(); }
+        function updateApproach(a, v) { currentHero.ApproachValues[a] = parseInt(v); updateJSON(); }
+        function updateConsequence(l, v) { currentHero.Consequences[l] = v; updateJSON(); }
+        function toggleStress(i) { currentHero.Stress[i] = !currentHero.Stress[i]; renderStress(); updateJSON(); }
+        function addListItem(type) { currentHero[type].push(""); renderLists(); updateJSON(); }
+        function removeListItem(t, i) { currentHero[t].splice(i, 1); renderLists(); updateJSON(); }
+        function updateListItem(t, i, v) { currentHero[t][i] = v; updateJSON(); }
+
+        function buildConcept() {
+            const full = [document.getElementById('guide-adj').value, document.getElementById('guide-race').value, document.getElementById('guide-class').value].filter(Boolean).join(' ');
+            if (full) { document.getElementById('ui-HighConcept').value = full; updateHero('HighConcept', full); }
+        }
+
+        function buildTrouble() {
+            const p = document.getElementById('trouble-prefix').value;
+            const s = document.getElementById('trouble-suffix').value.trim();
+            const full = p === "Too" ? `Too ${s || '[...]'} for my own good` : (p && s ? `${p} ${s}` : s || p);
+            if (full) { document.getElementById('ui-Trouble').value = full; updateHero('Trouble', full); }
+        }
+
+        function addGuidedAspect() {
+            const t = document.getElementById('aspect-template').value;
+            const d = document.getElementById('aspect-detail').value.trim();
+            if (t || d) { currentHero.Aspects.push(t ? `${t} ${d || '...'}` : d); renderLists(); updateJSON(); }
+        }
+
+        function populateStuntApproaches() {
+            document.getElementById('stunt-approach').innerHTML = currentHero.Config.Approaches.map(a => `<option value="${a}">${a}</option>`).join('');
+        }
+
+        function toggleStuntUI() {
+            const type = document.getElementById('stunt-type').value;
+            document.getElementById('stunt-ui-bonus').style.display = (type === 'bonus') ? 'inline' : 'none';
+            document.getElementById('stunt-ui-special').style.display = (type === 'special') ? 'inline' : 'none';
+        }
+
+        function addGuidedStunt() {
+            const type = document.getElementById('stunt-type').value;
+            const reason = document.getElementById('stunt-reason').value.trim() || "...";
+            const stunt = type === 'bonus' ?
+                `Because I ${reason}, I get +2 to ${document.getElementById('stunt-approach').value} when I ${document.getElementById('stunt-circumstance').value || '...'}.` :
+                `Because I ${reason}, once per session I can ${document.getElementById('stunt-action').value || '...'}.`;
+            currentHero.Stunts.push(stunt); renderLists(); updateJSON();
+        }
+
+        function updateJSON() { document.getElementById('json-output').innerText = JSON.stringify(currentHero, null, 2); }
+        function saveHero() { localStorage.setItem(STORAGE_KEY, JSON.stringify(currentHero)); showStatus("Saved."); }
+        function loadHero() {
+            const data = localStorage.getItem(STORAGE_KEY); if (!data) return;
+            currentHero = Object.assign(new FAECharacter(MyConfig), JSON.parse(data));
+            document.getElementById('ui-Name').value = currentHero.Name;
+            document.getElementById('ui-HighConcept').value = currentHero.HighConcept;
+            document.getElementById('ui-Trouble').value = currentHero.Trouble;
+            document.getElementById('ui-Notes').value = currentHero.Notes;
+            document.getElementById('ui-Refresh').value = currentHero.Refresh;
+            document.getElementById('ui-FatePoints').value = currentHero.FatePoints;
+            document.getElementById('ui-Mild').value = currentHero.Consequences.Mild;
+            document.getElementById('ui-Moderate').value = currentHero.Consequences.Moderate;
+            document.getElementById('ui-Severe').value = currentHero.Consequences.Severe;
+            init(); showStatus("Loaded.");
+        }
+
+        function downloadJSON() {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(currentHero, null, 2)], { type: 'application/json' }));
+            a.download = `${currentHero.Name || 'hero'}.json`; a.click();
+        }
+
+        function toggleAutoSave(e) { if (e) autoSaveInterval = setInterval(saveHero, 15000); else clearInterval(autoSaveInterval); }
+        function showStatus(m) { document.getElementById('save-status').innerText = `[${new Date().toLocaleTimeString()}] ${m}`; }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>
