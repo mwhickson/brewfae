@@ -250,22 +250,96 @@
                     <div class="builder-card no-print" style="background: #f0f7ff; border-color: #3498db;">
                         <div style="display: flex; gap: 4px; margin-bottom: 6px;">
                             <select id="guide-adj" onchange="buildConcept()">
-                                <option value="">(Adj)</option>
-                                <option value="Eldritch">Eldritch</option>
-                                <option value="Stalwart">Stalwart</option>
-                                <option value="Noble">Noble</option>
+                                <option></option>
+                                <option>Attractive</option>
+                                <option>Awkward</option>
+                                <option>Calm</option>
+                                <option>Charming</option>
+                                <option>Creative</option>
+                                <option>Doomed</option>
+                                <option>Driven</option>
+                                <option>Educated</option>
+                                <option>Empathic</option>
+                                <option>Exiled</option>
+                                <option>Fast</option>
+                                <option>Good-natured</option>
+                                <option>Graceful</option>
+                                <option>Guarded</option>
+                                <option>Hardy</option>
+                                <option>Hideous</option>
+                                <option>Honourable</option>
+                                <option>Impulsive</option>
+                                <option>Inquisitive</option>
+                                <option>Jovial</option>
+                                <option>Keen-Eared</option>
+                                <option>Learned</option>
+                                <option>Lucky</option>
+                                <option>Mad</option>
+                                <option>Mysterious</option>
+                                <option>Mystical</option>
+                                <option>Naive</option>
+                                <option>Noble</option>
+                                <option>Perceptive</option>
+                                <option>Quick</option>
+                                <option>Resilient</option>
+                                <option>Rugged</option>
+                                <option>Sharp-eyed</option>
+                                <option>Skeptical</option>
+                                <option>Spiritual</option>
+                                <option>Stalwart</option>
+                                <option>Stealthy</option>
+                                <option>Strong</option>
+                                <option>Strong-Willed</option>
+                                <option>Stubborn</option>
+                                <option>Swift</option>
+                                <option>Tough</option>
+                                <option>Unusual</option>
+                                <option>Vengeful</option>
+                                <option>Virtuous</option>
+                                <option>Wealthy</option>
+                                <option>Weird</option>
                             </select>
                             <select id="guide-race" onchange="buildConcept()">
-                                <option value="">(Race)</option>
-                                <option value="Human">Human</option>
-                                <option value="Elven">Elven</option>
-                                <option value="Dwarven">Dwarven</option>
+                                <option></option>
+                                <option>Abyssal</option>
+                                <option>Avian</option>
+                                <option>Celestial</option>
+                                <option>Canine</option>
+                                <option>Clockwork</option>
+                                <option>Construct</option>
+                                <option>Dwarven</option>
+                                <option>Elven</option>
+                                <option>Feline</option>
+                                <option>Goblin</option>
+                                <option>Halfling</option>
+                                <option>Human</option>
+                                <option>Kobold</option>
+                                <option>Orcish</option>
+                                <option>Reptilian</option>
+                                <option>Undead</option>
                             </select>
                             <select id="guide-class" onchange="buildConcept()">
-                                <option value="">(Class)</option>
-                                <option value="Fighter">Fighter</option>
-                                <option value="Sorcerer">Sorcerer</option>
-                                <option value="Rogue">Rogue</option>
+                                <option></option>
+                                <option>Barbarian</option>
+                                <option>Cleric</option>
+                                <option>Explorer</option>
+                                <option>Fighter</option>
+                                <option>Guard</option>
+                                <option>Investigator</option>
+                                <option>Knight</option>
+                                <option>Merchant</option>
+                                <option>Mystic</option>
+                                <option>Paladin</option>
+                                <option>Priest</option>
+                                <option>Ranger</option>
+                                <option>Rogue</option>
+                                <option>Sailor</option>
+                                <option>Soldier</option>
+                                <option>Sorcerer</option>
+                                <option>Spy</option>
+                                <option>Thief</option>
+                                <option>Warlock</option>
+                                <option>Wizard</option>
                             </select>
                         </div>
                     </div>
@@ -278,10 +352,10 @@
                     <div class="builder-card no-print" style="background: #fff5f5; border-color: #e74c3c;">
                         <div style="display: flex; gap: 4px; margin-bottom: 6px;">
                             <select id="trouble-prefix" onchange="buildTrouble()" style="flex:1">
-                                <option value="">(Template)</option>
+                                <option></option>
                                 <option value="Hunted by">Hunted by...</option>
                                 <option value="Debt to">Debt to...</option>
-                                <option value="Too">Too [X] for my own good</option>
+                                <option>Too [X] for my own good</option>
                             </select>
                             <input type="text" id="trouble-suffix" placeholder="Details..." oninput="buildTrouble()"
                                 style="flex:1">
@@ -295,7 +369,7 @@
                 <div class="builder-card no-print" style="background: #f0fff4; border-color: #27ae60;">
                     <div style="display: flex; gap: 4px;">
                         <select id="aspect-template" style="flex:1">
-                            <option value="">(Type)</option>
+                            <option value=""></option>
                             <option value="Member of">Member of...</option>
                             <option value="Wielder of">Wielder of...</option>
                         </select>
@@ -350,9 +424,11 @@
                     </select>
                     <div style="font-size: 0.8rem; margin: 5px 0;">
                         Because I <input type="text" id="stunt-reason" placeholder="..." style="width: 100px;">
-                        <span id="stunt-ui-bonus">, I get +2 to <select id="stunt-approach"
-                                style="width: 80px;"></select> when I <input type="text" id="stunt-circumstance"
+
+                        <span id="stunt-ui-bonus">, I get +2 to act when I use <select id="stunt-approach"
+                                style="width: 80px;"></select> to <input type="text" id="stunt-circumstance"
                                 style="width: 80px;"></span>
+                        
                         <span id="stunt-ui-special" style="display:none">, once per session I can <input type="text"
                                 id="stunt-action" style="width: 120px;"></span>
                     </div>
