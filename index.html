@@ -162,6 +162,10 @@
             width: 28px;
         }
 
+        .print-only {
+            display: none !important;
+        }
+
         /* Print Logic */
         @media print {
             @page {
@@ -188,6 +192,10 @@
             .no-print-ui,
             button {
                 display: none !important;
+            }
+
+            .print-only {
+                display: block !important;
             }
 
             .builder-card {
@@ -232,9 +240,9 @@
 <body>
 
     <div id="app">
-        <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <header class="no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
             <h1>Custom Fate Accelerated Character Sheet</h1>
-            <div id="save-status" class="no-print" style="font-size: 0.7rem; color: #7f8c8d;"></div>
+            <div id="save-status" style="font-size: 0.7rem; color: #7f8c8d;"></div>
         </header>
 
         <div class="dashboard">
@@ -533,7 +541,8 @@
                         </div>
                     </div>
                     <input type="text" id="ui-HighConcept" placeholder="High Concept..."
-                        oninput="updateHero('HighConcept', this.value)">
+                        oninput="updateHero('HighConcept', this.value);" class="no-print">
+                    <div id="print-HighConcept" class="print-only"></div>
                 </div>
 
                 <div class="form-group">
@@ -558,7 +567,8 @@
                         </div>
                     </div>
                     <input type="text" id="ui-Trouble" placeholder="Trouble..."
-                        oninput="updateHero('Trouble', this.value)">
+                        oninput="updateHero('Trouble', this.value)" class="no-print">
+                    <div id="print-Trouble" class="print-only"></div>
                 </div>
 
                 <h3>Aspects</h3>
@@ -610,7 +620,8 @@
 
                 <h2>Notes</h2>
                 <textarea id="ui-Notes" rows="12" placeholder="Session notes, gear, etc..."
-                    oninput="updateHero('Notes', this.value)"></textarea>
+                    oninput="updateHero('Notes', this.value)" class="no-print"></textarea>
+                <div id="print-Notes" class="print-only"></div>
 
                 <div class="no-print" style="margin-top:10px;">
                     <label>Raw Data Preview</label>
@@ -729,20 +740,42 @@
         function renderLists() {
             document.getElementById('aspect-list').innerHTML = currentHero.Aspects.map((val, i) => `
             <div class="list-item">
-                <input type="text" value="${val}" oninput="updateListItem('Aspects', ${i}, this.value)">
+                <input type="text" value="${val}" oninput="updateListItem('Aspects', ${i}, this.value)" class="no-print">
+                <div class="print-only">${val}</div>
                 <button class="danger no-print" onclick="removeListItem('Aspects', ${i})">×</button>
             </div>
         `).join('');
 
             document.getElementById('stunt-list').innerHTML = currentHero.Stunts.map((val, i) => `
             <div class="list-item">
-                <input type="text" value="${val}" oninput="updateListItem('Stunts', ${i}, this.value)">
+                <input type="text" value="${val}" oninput="updateListItem('Stunts', ${i}, this.value)" class="no-print">
+                <div class="print-only">${val}</div>
                 <button class="danger no-print" onclick="removeListItem('Stunts', ${i})">×</button>
             </div>
         `).join('');
         }
 
-        function updateHero(f, v) { currentHero[f] = v; updateJSON(); }
+        function mirrorPrintFields(v, id) {
+            const dest = document.getElementById(id);
+            dest.innerText = v;
+        }
+        function updateHero(f, v) {
+            currentHero[f] = v; 
+
+            switch(f) {
+                case "HighConcept":
+                    mirrorPrintFields(v, "print-HighConcept");
+                    break;
+                case "Trouble":
+                    mirrorPrintFields(v, "print-Trouble");
+                    break;
+                case "Notes":
+                    mirrorPrintFields(v, "print-Notes");
+                    break;
+            }
+
+            updateJSON(); 
+        }
         function updateApproach(a, v) { currentHero.ApproachValues[a] = parseInt(v); updateJSON(); }
         function updateConsequence(l, v) { currentHero.Consequences[l] = v; updateJSON(); }
         function toggleStress(i) { currentHero.Stress[i] = !currentHero.Stress[i]; renderStress(); updateJSON(); }
