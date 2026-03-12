@@ -23,7 +23,8 @@
                 <h2>Identity</h2>
                 <div class="form-group">
                     <label>Character Name</label>
-                    <input type="text" id="ui-Name" oninput="updateHero('Name', this.value)" placeholder="Name">
+                    <!-- oninput="updateHero('Name', this.value)" -->
+                    <input id="name-input" type="text" placeholder="Name">
                 </div>
 
                 <div class="form-group">
@@ -32,19 +33,22 @@
                     <div class="builder-card no-print">
                         <!-- style="display: flex; gap: 4px; margin-bottom: 6px;" -->
                         <div>
-                            <select id="guide-adj" onchange="buildConcept()">
+                            <!--  onchange="buildConcept()" -->
+                            <select id="guide-adj">
                                 <option></option>
                             </select>
-                            <select id="guide-race" onchange="buildConcept()">
+                            <!--  onchange="buildConcept()" -->
+                            <select id="guide-race">
                                 <option></option>
                             </select>
-                            <select id="guide-class" onchange="buildConcept()">
+                            <!--  onchange="buildConcept()" -->
+                            <select id="guide-class">
                                 <option></option>
                             </select>
                         </div>
                     </div>
-                    <input type="text" id="ui-HighConcept" placeholder="High Concept..."
-                        oninput="updateHero('HighConcept', this.value);" class="no-print">
+                    <!-- oninput="updateHero('HighConcept', this.value);" -->
+                    <input id="high-concept-input" type="text" placeholder="High Concept..." class="no-print">
                     <div id="print-HighConcept" class="print-only"></div>
                 </div>
 
@@ -55,15 +59,17 @@
                         <!-- style="display: flex; gap: 4px; margin-bottom: 6px;" -->
                         <div>
                             <!-- style="flex:1" -->
-                            <select id="trouble-prefix" onchange="buildTrouble()">
+                            <!--  onchange="buildTrouble()" -->
+                            <select id="trouble-prefix">
                                 <option></option>
                             </select>
                             <!-- style="flex:1" -->
-                            <input type="text" id="trouble-suffix" placeholder="Details..." oninput="buildTrouble()">
+                            <!-- oninput="buildTrouble()" -->
+                            <input id="trouble-suffix" type="text" placeholder="Details...">
                         </div>
                     </div>
-                    <input type="text" id="ui-Trouble" placeholder="Trouble..."
-                        oninput="updateHero('Trouble', this.value)" class="no-print">
+                    <!-- oninput="updateHero('Trouble', this.value)" -->
+                    <input id="trouble-input" type="text" placeholder="Trouble..." class="no-print">
                     <div id="print-Trouble" class="print-only"></div>
                 </div>
 
@@ -77,14 +83,16 @@
                             <option value=""></option>
                         </select>
                         <!-- style="flex:1" -->
-                        <input type="text" id="aspect-detail" placeholder="Detail...">
+                        <input id="aspect-input" type="text" placeholder="Detail...">
                         <!-- style="background: var(--success);" -->
-                        <button onclick="addGuidedAspect()">+</button>
+                        <!-- onclick="addGuidedAspect()" -->
+                        <button>+</button>
                     </div>
                 </div>
                 <div id="aspect-list"></div>
                 <!-- style="width:100%; margin-top:5px; background: #95a5a6;" -->
-                <button onclick="addListItem('Aspects')" class="no-print">+ Add Custom Aspect</button>
+                <!-- onclick="addListItem('Aspects')" -->
+                <button class="no-print">+ Add Custom Aspect</button>
             </section>
 
             <section>
@@ -103,19 +111,20 @@
                     <!-- style="width: 50px;" -->
                     <div>
                         <label>Refresh</label>
-                        <input type="number" id="ui-Refresh" value="3" onchange="updateHero('Refresh', this.value)">
+                        <!-- onchange="updateHero('Refresh', this.value)" -->
+                        <input id="refresh-input" type="number" value="3">
                     </div>
                     <!-- style="width: 50px;" -->
                     <div>
                         <label>Fate</label>
-                        <input type="number" id="ui-FatePoints" value="3"
-                            onchange="updateHero('FatePoints', this.value)">
+                        <!-- onchange="updateHero('FatePoints', this.value)" -->
+                        <input id="fate-point-input" type="number" value="3">
                     </div>
                 </div>
 
                 <h2>Notes</h2>
-                <textarea id="ui-Notes" rows="12" placeholder="Session notes, gear, etc..."
-                    oninput="updateHero('Notes', this.value)" class="no-print"></textarea>
+                <!-- oninput="updateHero('Notes', this.value)" -->
+                <textarea id="notes-input" rows="12" placeholder="Session notes, gear, etc..." class="no-print"></textarea>
                 <div id="print-Notes" class="print-only"></div>
             </section>
 
@@ -123,50 +132,60 @@
                 <h2>Stunts</h2>
                 <!-- style="background: #fdfaf0; border-color: #f39c12;" -->
                 <div class="builder-card no-print">
-                    <select id="stunt-type" onchange="toggleStuntUI()">
+                    <!-- onchange="toggleStuntUI()" -->
+                    <select id="stunt-type">
                         <option value="bonus">Bonus (+2)</option>
                         <option value="special">Session Power</option>
                     </select>
                     <!-- style="font-size: 0.8rem; margin: 5px 0;" -->
                     <div>
                         <!-- style="width: 325px;" -->
-                        Because I <input type="text" id="stunt-reason" placeholder="...">,
+                        Because I <input id="stunt-reason" type="text" placeholder="...">,
                         <br>
-                        <span id="stunt-ui-bonus">I get +2 to act when I use 
+                        <span id="stunt-ui-bonus">I get +2 to act when I use
                             <!-- style="width: 80px;" -->
-                            <select id="stunt-approach"></select> to 
+                            <select id="stunt-approach"></select> to
                             <!-- style="width: 150px;" -->
-                            <input type="text" id="stunt-circumstance"></span>
-                        
+                            <input id="stunt-circumstance" type="text"></span>
+
                         <!-- style="display:none" -->
-                        <span id="stunt-ui-special">once per session I can 
+                        <span id="stunt-ui-special">once per session I can
                             <!-- style="width: 250px;" -->
-                            <input type="text" id="stunt-action">
+                            <input id="stunt-action" type="text">
                         </span>
                     </div>
                     <!-- style="width:100%; background: #f39c12;" -->
-                    <button onclick="addGuidedStunt()">Add Stunt</button>
+                    <!-- onclick="addGuidedStunt()" -->
+                    <button>Add Stunt</button>
                 </div>
                 <div id="stunt-list"></div>
                 <!-- style="width:100%; margin-top:5px; background: #95a5a6;" -->
-                <button onclick="addListItem('Stunts')" class="no-print">+ Add Custom Stunt</button>
+                <!-- onclick="addListItem('Stunts')" -->
+                <button class="no-print">+ Add Custom Stunt</button>
 
                 <h2>Consequences</h2>
                 <div class="form-group">
                     <!-- style="margin-bottom:4px" -->
-                    <input type="text" id="ui-Mild" placeholder="Mild (2)" oninput="updateConsequence('Mild', this.value)">
+                    <!-- oninput="updateConsequence('Mild', this.value)" -->
+                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)">
                     <!-- style="margin-bottom:4px" -->
-                    <input type="text" id="ui-Moderate" placeholder="Moderate (4)" oninput="updateConsequence('Moderate', this.value)">
-                    <input type="text" id="ui-Severe" placeholder="Severe (6)" oninput="updateConsequence('Severe', this.value)">
+                    <!-- oninput="updateConsequence('Moderate', this.value)" -->
+                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)">
+                    <!-- oninput="updateConsequence('Severe', this.value)" -->
+                    <input id="severe-consequence-input" type="text" placeholder="Severe (6)">
                 </div>
 
                 <!-- style="background:#eee; padding: 10px; border-radius: 6px; margin-top: 15px;" -->
                 <div class="no-print">
                     <div class="btn-group">
-                        <button onclick="saveHero()">Save</button>
-                        <button class="secondary" onclick="loadHero()">Load</button>
-                        <button class="success" onclick="window.print()">Print PDF</button>
-                        <button class="secondary" onclick="downloadJSON()">Download JSON</button>
+                        <!-- onclick="saveHero()" -->
+                        <button id="save-button">Save</button>
+                        <!-- onclick="loadHero()" -->
+                        <button id="load-button">Load</button>
+                        <!-- onclick="window.print()" -->
+                        <button id="print-button">Print PDF</button>
+                        <!-- onclick="downloadJSON()" -->
+                        <button id="download-button">Download JSON</button>
                     </div>
                 </div>
 

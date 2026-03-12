@@ -2,6 +2,97 @@
 
 import { data } from "./data.js";
 
+class UIHelper {
+    static GetElement(id) {
+        return document.getElementById(id);
+    }
+}
+
+class App {
+    static UI = {
+        Buttons: {
+            Save: UIHelper.GetElement("save-button"),
+            Load: UIHelper.GetElement("load-button"),
+            Print: UIHelper.GetElement("print-button"),
+            Download: UIHelper.GetElement("download-button"),
+        },
+        Handlers: {
+            // updateHero
+            // buildConcept
+            // buildTrouble
+            // addGuidedAspect
+            // addListItem
+            // toggleStuntUI
+            // addGuidedStunt
+            // updateConsequence
+            // saveHero
+            // loadHero
+            // downloadJSON
+            // window.print
+        },
+        Inputs: {
+            Name: UIHelper.GetElement("name-input"),
+            HighConcept: UIHelper.GetElement("high-concept-input"),
+            Trouble: UIHelper.GetElement("trouble-input"),
+            Aspect: UIHelper.GetElement("aspect-input"),
+            Approach: {
+                A: UIHelper.GetElement("approach-a-input"),
+                B: UIHelper.GetElement("approach-b-input"),
+                C: UIHelper.GetElement("approach-c-input"),
+                D: UIHelper.GetElement("approach-d-input"),
+                E: UIHelper.GetElement("approach-e-input"),
+                F: UIHelper.GetElement("approach-f-input"),
+            },
+            Refresh: UIHelper.GetElement("refresh-input"),
+            FatePoint: UIHelper.GetElement("fate-point-input"),
+            Notes: UIHelper.GetElement("notes-input"),
+            Stunt: UIHelper.GetElement("stunt-input"),
+            Consequence: {
+                Mild: UIHelper.GetElement("mild-consequence-input"),
+                Moderate: UIHelper.GetElement("moderate-consequence-input"),
+                Severe: UIHelper.GetElement("severe-consequence-input"),
+            }
+        },
+        Templates: {
+            // style="color:#333; margin:0; text-transform:none;"
+            //  onchange="updateApproach('${appr}', this.value)"
+            Approach: `
+                <div class="approach-row">
+                    <label>{{LABEL}}</label>
+                    <input id="approach-{{TAG}}-input" type="number" value="{{VALUE}}" min="0" max="5">
+                </div>
+            `.trim(),
+            // oninput="updateListItem('Aspects', ${i}, this.value)"
+            // onclick="removeListItem('Aspects', ${i})"
+            Aspect: `
+                <div class="list-item">
+                    <input type="text" value="{{VALUE}}" class="no-print">
+                    <div class="print-only">{{VALUE}}</div>
+                    <button class="danger no-print">×</button>
+                </div>
+            `.trim(),
+            // ${checked ? 'checked' : ''}
+            // onclick="toggleStress(${i})"
+            StressBox: `
+                <div id="stress-box-{{VALUE}}" class="stress-box">{{VALUE}}</div>
+            `.trim(),
+            // oninput="updateListItem('Stunts', ${i}, this.value)"
+            // onclick="removeListItem('Stunts', ${i})"
+            Stunt: `
+                <div class="list-item">
+                    <input type="text" value="{{VALUE}}" class="no-print">
+                    <div class="print-only">{{VALUE}}</div>
+                    <button class="danger no-print">×</button>
+                </div>
+            `.trim(),
+        }
+    }
+
+    constructor() {
+        // PASS:
+    }
+}
+
 class BrewConfig {
     constructor(Name, Approaches) {
         this.Name = Name ?? "Fantasy";
@@ -71,7 +162,7 @@ const mirrorPrintFields = (v, id) => {
 }
 
 const updateHero = (f, v) => {
-    currentHero[f] = v; 
+    currentHero[f] = v;
 
     switch(f) {
         case "HighConcept":
@@ -85,7 +176,7 @@ const updateHero = (f, v) => {
             break;
     }
 
-    updateJSON(); 
+    updateJSON();
 }
 const updateApproach = (a, v) => { currentHero.ApproachValues[a] = parseInt(v); updateJSON(); }
 const updateConsequence = (l, v) => { currentHero.Consequences[l] = v; updateJSON(); }
