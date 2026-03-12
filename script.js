@@ -5,6 +5,47 @@ import { data } from "./data.js";
 
 const AppData = data;
 
+class BrewConfig {
+    constructor(Name = "", Approaches = [""]) {
+        this.Name = Name ?? "Fantasy";
+        this.Approaches = Approaches ?? ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"];
+    }
+}
+
+class FAECharacter {
+    Name;
+    HighConcept;
+    Trouble;
+    Aspects;
+    Stunts;
+    Notes;
+    Refresh;
+    FatePoints;
+    Stress;
+    Consequences;
+    Config;
+    ApproachValues;
+
+    constructor(config) {
+        this.Name = "";
+        this.HighConcept = "";
+        this.Trouble = "";
+        this.Aspects = [];
+        this.Stunts = [];
+        this.Notes = "";
+        this.Refresh = 3;
+        this.FatePoints = 3;
+        this.Stress = [false, false, false];
+        this.Consequences = { Mild: "", Moderate: "", Severe: "" };
+        this.Config = config;
+        this.ApproachValues = {};
+        this.Config.Approaches.forEach(a => this.ApproachValues[a] = 0);
+    }
+}
+
+const MyConfig = new BrewConfig();
+let currentHero = new FAECharacter(MyConfig);
+
 class UIHelper {
     static GetElement(id = "") {
         return document.getElementById(id) || {};
@@ -148,21 +189,23 @@ class AppController {
 
             currentHero = Object.assign(new FAECharacter(MyConfig), JSON.parse(data));
 
-            UIHelper.GetElement("ui-Name").value = currentHero.Name;
-            UIHelper.GetElement("ui-HighConcept").value = currentHero.HighConcept;
-            UIHelper.GetElement("ui-Trouble").value = currentHero.Trouble;
-            UIHelper.GetElement("ui-Notes").value = currentHero.Notes;
-            UIHelper.GetElement("ui-Refresh").value = currentHero.Refresh;
-            UIHelper.GetElement("ui-FatePoints").value = currentHero.FatePoints;
-            UIHelper.GetElement("ui-Mild").value = currentHero.Consequences.Mild;
-            UIHelper.GetElement("ui-Moderate").value = currentHero.Consequences.Moderate;
-            UIHelper.GetElement("ui-Severe").value = currentHero.Consequences.Severe;
+            UIHelper.GetElement("name-input").value = currentHero.Name;
+            UIHelper.GetElement("high-concept-input").value = currentHero.HighConcept;
+            UIHelper.GetElement("trouble-input").value = currentHero.Trouble;
+            UIHelper.GetElement("notes-input").value = currentHero.Notes;
+            UIHelper.GetElement("refresh-input").value = currentHero.Refresh;
+            UIHelper.GetElement("fate-point-input").value = currentHero.FatePoints;
+            UIHelper.GetElement("mild-consequence-input").value = currentHero.Consequences.Mild;
+            UIHelper.GetElement("moderate-consequence-input").value = currentHero.Consequences.Moderate;
+            UIHelper.GetElement("severe-consequence-input").value = currentHero.Consequences.Severe;
 
             AppController.init();
             AppController.showStatus("Loaded.");
         },
 
-        printCharacter: () => { window.print(); },
+        printCharacter: () => {
+            window.print();
+        },
 
         removeListItem: (t, i) => {
             currentHero[t].splice(i, 1);
@@ -280,45 +323,4 @@ class AppController {
     };
 }
 
-class BrewConfig {
-    constructor(Name = "", Approaches = [""]) {
-        this.Name = Name ?? "Fantasy";
-        this.Approaches = Approaches ?? ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"];
-    }
-}
-
-class FAECharacter {
-    Name;
-    HighConcept;
-    Trouble;
-    Aspects;
-    Stunts;
-    Notes;
-    Refresh;
-    FatePoints;
-    Stress;
-    Consequences;
-    Config;
-    ApproachValues;
-
-    constructor(config) {
-        this.Name = "";
-        this.HighConcept = "";
-        this.Trouble = "";
-        this.Aspects = [];
-        this.Stunts = [];
-        this.Notes = "";
-        this.Refresh = 3;
-        this.FatePoints = 3;
-        this.Stress = [false, false, false];
-        this.Consequences = { Mild: "", Moderate: "", Severe: "" };
-        this.Config = config;
-        this.ApproachValues = {};
-        this.Config.Approaches.forEach(a => this.ApproachValues[a] = 0);
-    }
-}
-
-const MyConfig = new BrewConfig();
-let currentHero = new FAECharacter(MyConfig);
-
-window.onload = AppController.init;
+export { App, AppController, currentHero }
