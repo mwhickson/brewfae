@@ -1,5 +1,7 @@
 "use strict;";
 
+const STORAGE_KEY = "BREWFAE_SAVE";
+
 const adjectives = [
     "Absent-minded",
     "Adolescent",
@@ -319,6 +321,7 @@ const troubles = [
 ];
 
 const data = {
+    STORAGE_KEY: STORAGE_KEY,
     adjectives: adjectives,
     approaches: approaches,
     aspects: aspects,

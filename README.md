@@ -4,6 +4,10 @@
 
 A vibe-coded (with [Google Gemini](https://gemini.google.com/)) Fate Accelerated (FAE) character creation tool.
 
+> **2026-03-11:**
+>
+> It didn't take long before the Gemini generated app reached a point where Gemini wasn't effective at maintaining it, and I didn't like the code. To that end, refactoring is in progress.
+
 Long story short, I wanted a custom (fantasy) themed FAE character creation tool I could pass off to players to guide them during character creation. I started whipping something up, quickly decided I would rather be crafting play materials and actually running the game instead of writing tooling and here we are.
 
 ## Features
@@ -27,6 +31,7 @@ The feature list, as it evolved, came down to:
 
 Things I would like, but aren't dealbreakers at present are:
 
+- **refactor application for ongoing manual maintenance**
 - character validation
 - random name generation
 - true PDF export
@@ -41,6 +46,21 @@ Things I would like, but aren't dealbreakers at present are:
 ### Print Output
 
 ![Print Output](print.png)
+
+## Running locally
+
+Now that files have been split out into `CSS` and `JS` there is `CORS` to consider for local development.
+
+Run a local webserver to serve up a functional version.
+
+I recommend Python (if it's available), but many other quick 'n' dirty serve solutions exist.
+
+```bash
+cd /path/to/brewfae/
+python -m http.server # you might need to use `python3`
+
+# visit the hosting url in your browser (default is http://0.0.0.0:8000/)
+```
 
 ## References
 
