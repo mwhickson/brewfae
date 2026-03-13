@@ -1,10 +1,10 @@
 :root {
+    --accent: #3498db;
     --bg: lightgrey;
     --bg-app: white;
     --bg-print: white;
     --text: #333;
     /*
-    --accent: #3498db;
     --bg: #f4f4f9;
     --card-bg: #fff;
     --danger: #e74c3c;
@@ -257,6 +257,28 @@ button.danger {
 
 .print-only {
     display: none !important;
+}
+
+.link-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.link-list li {
+    border-left: 5px solid var(--accent);
+    margin-bottom: 3px;
+    padding: 5px 0;
+    padding-left: 5px;
+}
+
+.link-list li a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link-list li a:hover {
+    text-decoration: underline;
 }
 
 /* Print Logic */
