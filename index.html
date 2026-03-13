@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Custom FAE Character Tool</title>
+    <title>Custom Fate Accelerated (FAE) Character Sheet</title>
 
     <link rel="stylesheet" href="./style.css">
 </head>
@@ -11,10 +11,8 @@
 <body>
 
     <div id="app">
-        <!--  style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;" -->
         <header class="no-print">
             <h1>Custom Fate Accelerated Character Sheet</h1>
-            <!-- style="font-size: 0.7rem; color: #7f8c8d;" -->
             <div id="save-status"></div>
         </header>
 
@@ -28,61 +26,39 @@
 
                 <div class="form-group">
                     <label>High Concept</label>
-                    <!-- style="background: #f0f7ff; border-color: #3498db;" -->
-                    <div class="builder-card no-print">
-                        <!-- style="display: flex; gap: 4px; margin-bottom: 6px;" -->
-                        <div>
-                            <select id="guide-adj" onchange="AppController.Handlers.buildConcept()">
-                                <option></option>
-                            </select>
-                            <select id="guide-race" onchange="AppController.Handlers.buildConcept()">
-                                <option></option>
-                            </select>
-                            <select id="guide-class" onchange="AppController.Handlers.buildConcept()">
-                                <option></option>
-                            </select>
+                    <div class="high-concept-guide-container builder-card no-print">
+                        <div class="high-concept-guide-ui">
+                            <select id="adjective-selector"><option></option></select>
+                            <select id="race-selector"><option></option></select>
+                            <select id="class-selector"><option></option></select>
                         </div>
                     </div>
                     <input id="high-concept-input" type="text" placeholder="High Concept..." class="no-print">
-                    <div id="print-HighConcept" class="print-only"></div>
+                    <div id="high-concept-display" class="print-only"></div>
                 </div>
 
                 <div class="form-group">
                     <label>Trouble</label>
-                    <!-- style="background: #fff5f5; border-color: #e74c3c;" -->
-                    <div class="builder-card no-print">
-                        <!-- style="display: flex; gap: 4px; margin-bottom: 6px;" -->
-                        <div>
-                            <!-- style="flex:1" -->
-                            <select id="trouble-prefix" onchange="AppController.Handlers.buildTrouble()">
-                                <option></option>
-                            </select>
-                            <!-- style="flex:1" -->
-                            <input id="trouble-suffix" type="text" placeholder="Details..." oninput="AppController.Handlers.buildTrouble()">
+                    <div class="trouble-guide-container builder-card no-print">
+                        <div class="trouble-guide-ui">
+                            <select id="trouble-starter"><option></option></select>
+                            <input id="trouble-detail-input" type="text" placeholder="Details...">
                         </div>
                     </div>
                     <input id="trouble-input" type="text" placeholder="Trouble..." class="no-print">
-                    <div id="print-Trouble" class="print-only"></div>
+                    <div id="trouble-display" class="print-only"></div>
                 </div>
 
                 <h3>Aspects</h3>
-                <!-- style="background: #f0fff4; border-color: #27ae60;" -->
-                <div class="builder-card no-print">
-                    <!-- style="display: flex; gap: 4px;" -->
-                    <div>
-                        <!-- style="flex:1" -->
-                        <select id="aspect-template">
-                            <option value=""></option>
-                        </select>
-                        <!-- style="flex:1" -->
+                <div class="aspect-guide-container builder-card no-print">
+                    <div class="aspect-guide-ui">
+                        <select id="aspect-template"><option value=""></option></select>
                         <input id="aspect-input" type="text" placeholder="Detail...">
-                        <!-- style="background: var(--success);" -->
-                        <button onclick="AppController.Handlers.addGuidedAspect()">+</button>
+                        <button id="add-aspect-button">+</button>
                     </div>
                 </div>
                 <div id="aspect-list"></div>
-                <!-- style="width:100%; margin-top:5px; background: #95a5a6;" -->
-                <button class="no-print" onclick="AppController.Handlers.addListItem('Aspects')">+ Add Custom Aspect</button>
+                <button id="add-custom-aspect-button" class="no-print">+ Add Custom Aspect</button>
             </section>
 
             <section>
@@ -91,20 +67,16 @@
                 <div class="no-print"><i>Default Score Values: 3, 2, 2, 1, 1, 0</i></div>
 
                 <h2>Vitality</h2>
-                <!-- style="display: flex; gap: 10px; align-items: flex-end;" -->
-                <div>
-                    <!-- style="flex:1" -->
-                    <div>
+                <div class="vitality-container">
+                    <div class="flex-1">
                         <label>Stress Track</label>
                         <div id="stress-track" class="stress-track"></div>
                     </div>
-                    <!-- style="width: 50px;" -->
-                    <div>
+                    <div class="width-50px">
                         <label>Refresh</label>
                         <input id="refresh-input" type="number" value="3">
                     </div>
-                    <!-- style="width: 50px;" -->
-                    <div>
+                    <div class="width-50px">
                         <label>Fate</label>
                         <input id="fate-point-input" type="number" value="3">
                     </div>
@@ -112,51 +84,41 @@
 
                 <h2>Notes</h2>
                 <textarea id="notes-input" rows="12" placeholder="Session notes, gear, etc..." class="no-print"></textarea>
-                <div id="print-Notes" class="print-only"></div>
+                <div id="notes-display" class="print-only"></div>
             </section>
 
             <section>
                 <h2>Stunts</h2>
-                <!-- style="background: #fdfaf0; border-color: #f39c12;" -->
-                <div class="builder-card no-print">
-                    <select id="stunt-type" onchange="() => AppController.Handlers.toggleStuntUI()">
+                <div class="stunt-guide-container builder-card no-print">
+                    <select id="stunt-type">
                         <option value="bonus">Bonus (+2)</option>
                         <option value="special">Session Power</option>
                     </select>
-                    <!-- style="font-size: 0.8rem; margin: 5px 0;" -->
-                    <div>
-                        <!-- style="width: 325px;" -->
-                        Because I <input id="stunt-reason" type="text" placeholder="...">,
+
+                    <div class="stunt-guide-ui">
+                        Because I <input id="stunt-reason" class="width-325px" type="text" placeholder="...">,
                         <br>
                         <span id="stunt-ui-bonus">I get +2 to act when I use
-                            <!-- style="width: 80px;" -->
-                            <select id="stunt-approach"></select> to
-                            <!-- style="width: 150px;" -->
-                            <input id="stunt-circumstance" type="text"></span>
+                            <select id="stunt-approach" class="width-80px"></select> to
+                            <input id="stunt-circumstance" type="text" class="width-150px"></span>
 
                         <span id="stunt-ui-special" style="display:none">once per session I can
-                            <!-- style="width: 250px;" -->
-                            <input id="stunt-action" type="text">
+                            <input id="stunt-action" type="text" class="width-250px">
                         </span>
                     </div>
-                    <!-- style="width:100%; background: #f39c12;" -->
-                    <button onclick="() => AppController.Handlers.addGuidedStunt()">Add Stunt</button>
+                    <button id="add-stunt-button">Add Stunt</button>
                 </div>
                 <div id="stunt-list"></div>
-                <!-- style="width:100%; margin-top:5px; background: #95a5a6;" -->
-                <button class="no-print" onclick="() => AppController.Handlers.addListItem('Stunts')">+ Add Custom Stunt</button>
+                <button id="add-custom-stunt-button" class="no-print">+ Add Custom Stunt</button>
 
                 <h2>Consequences</h2>
                 <div class="form-group">
-                    <!-- style="margin-bottom:4px" -->
-                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)">
-                    <!-- style="margin-bottom:4px" -->
-                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)">
+                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)" class="margin-bottom-4px">
+                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)" class="margin-bottom-4px">
                     <input id="severe-consequence-input" type="text" placeholder="Severe (6)">
                 </div>
 
-                <!-- style="background:#eee; padding: 10px; border-radius: 6px; margin-top: 15px;" -->
-                <div class="no-print">
+                <div class="feature-buttons no-print">
                     <div class="btn-group">
                         <button id="save-button">Save</button>
                         <button id="load-button">Load</button>
@@ -168,10 +130,11 @@
                 <div class="no-print">
                     <h2>Resources</h2>
                     <ul>
-                        <li><a target="_blank" href="https://evilhat.com/product/fate-accelerated-edition/">Fate Accelerated Edition at Evil Hat Producions</a></li>
+                        <li><a target="_blank" href="https://evilhat.com/product/fate-accelerated-edition/">Fate Accelerated Edition at Evil Hat Productions</a></li>
                         <li><a target="_blank" href="https://fate-srd.com/fate-accelerated">Fate Accelerated SRD at Fate SRD</a></li>
                         <li><a target="_blank" href="https://fate-srd.com/stuntmaker/index.html">Fate RPG Stuntmaker</a></li>
                         <li><a target="_blank" href="https://mwhickson.github.io/brewfae/">Custom FAE Character Creation Tool</a> (this page)</li>
+                        <li><a target="_blank" href="https://github.com/mwhickson/brewfae/">Custom FAE Character Creation Tool</a> (GitHub)</li>
                     </ul>
                 </div>
             </section>
@@ -179,31 +142,8 @@
     </div>
 
     <script type="module">
-        import { App, AppController } from "./script.js";
-
-        const initializeApplication = () => {
-            AppController.init();
-
-            App.UI.Buttons.Save.onclick = AppController.Handlers.saveHero;
-            App.UI.Buttons.Load.onclick = AppController.Handlers.loadHero;
-            App.UI.Buttons.Print.onclick = AppController.Handlers.printCharacter;
-            App.UI.Buttons.Download.onclick = AppController.Handlers.downloadJSON;
-
-            App.UI.Inputs.Name.oninput = () => AppController.Handlers.updateHero("Name", App.UI.Inputs.Name.value);
-            App.UI.Inputs.HighConcept.oninput = () => AppController.Handlers.updateHero("HighConcept", App.UI.Inputs.HighConcept.value);
-            App.UI.Inputs.Trouble.oninput = () => AppController.Handlers.updateHero("Trouble", App.UI.Inputs.Trouble.value);
-            // App.UI.Inputs.Aspect
-            // App.UI.Inputs.Approach
-            App.UI.Inputs.Refresh.onchange = () => AppController.Handlers.updateHero("Refresh", App.UI.Inputs.Refresh.value);
-            App.UI.Inputs.FatePoint.onchange = () => AppController.Handlers.updateHero("FatePoints", App.UI.Inputs.FatePoint.value);
-            App.UI.Inputs.Notes.oninput = () => AppController.Handlers.updateHero("Notes", App.UI.Inputs.Notes.value);
-            // App.UI.Inputs.Stunt
-            App.UI.Inputs.Consequence.Mild.oninput = () => AppController.Handlers.updateConsequence("Mild", App.UI.Inputs.Consequence.Mild.value);
-            App.UI.Inputs.Consequence.Moderate.oninput = () => AppController.Handlers.updateConsequence("Moderate", App.UI.Inputs.Consequence.Moderate.value);
-            App.UI.Inputs.Consequence.Severe.oninput = () => AppController.Handlers.updateConsequence("Severe", App.UI.Inputs.Consequence.Severe.value);
-        }
-
-        window.onload = initializeApplication;
+        import { AppController } from "./script.js";
+        window.onload = AppController.init;
     </script>
 </body>
 

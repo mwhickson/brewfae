@@ -44,26 +44,62 @@ class FAECharacter {
 }
 
 const MyConfig = new BrewConfig();
-let currentHero = new FAECharacter(MyConfig);
+let currentCharacter = new FAECharacter(MyConfig);
 
 class UIHelper {
     static GetElement(id = "") {
         return document.getElementById(id) || {};
+    }
+
+    static RegisterUI() {
+        App.UI.Buttons.AddAspect.onclick = AppController.Handlers.addGuidedAspect;
+        App.UI.Buttons.AddCustomAspect.onclick = AppController.Handlers.addListItem('Aspects');
+        App.UI.Buttons.AddCustomStunt.onclick = AppController.Handlers.addListItem('Stunts');
+        App.UI.Buttons.AddStunt.onclick = AppController.Handlers.addGuidedStunt;
+        App.UI.Buttons.Download.onclick = AppController.Handlers.downloadJSON;
+        App.UI.Buttons.Load.onclick = AppController.Handlers.loadHero;
+        App.UI.Buttons.Print.onclick = AppController.Handlers.printCharacter;
+        App.UI.Buttons.Save.onclick = AppController.Handlers.saveHero;
+
+        App.UI.Inputs.Name.oninput = () => AppController.Handlers.updateCharacter("Name", App.UI.Inputs.Name.value);
+        App.UI.Inputs.HighConcept.oninput = () => AppController.Handlers.updateCharacter("HighConcept", App.UI.Inputs.HighConcept.value);
+        App.UI.Inputs.Trouble.oninput = () => AppController.Handlers.updateCharacter("Trouble", App.UI.Inputs.Trouble.value);
+        App.UI.Inputs.TroubleDetail.oninput = () => AppController.Handlers.buildTrouble();
+        // App.UI.Inputs.Aspect
+        // App.UI.Inputs.Approach
+        App.UI.Inputs.Refresh.onchange = () => AppController.Handlers.updateCharacter("Refresh", App.UI.Inputs.Refresh.value);
+        App.UI.Inputs.FatePoint.onchange = () => AppController.Handlers.updateCharacter("FatePoints", App.UI.Inputs.FatePoint.value);
+        App.UI.Inputs.Notes.oninput = () => AppController.Handlers.updateCharacter("Notes", App.UI.Inputs.Notes.value);
+        // App.UI.Inputs.Stunt
+        App.UI.Inputs.Consequence.Mild.oninput = () => AppController.Handlers.updateConsequence("Mild", App.UI.Inputs.Consequence.Mild.value);
+        App.UI.Inputs.Consequence.Moderate.oninput = () => AppController.Handlers.updateConsequence("Moderate", App.UI.Inputs.Consequence.Moderate.value);
+        App.UI.Inputs.Consequence.Severe.oninput = () => AppController.Handlers.updateConsequence("Severe", App.UI.Inputs.Consequence.Severe.value);
+
+        App.UI.Selects.Adjective.onchange = () => AppController.Handlers.buildConcept();
+        App.UI.Selects.Class.onchange = () => AppController.Handlers.buildConcept();
+        App.UI.Selects.Race.onchange = () => AppController.Handlers.buildConcept();
+        App.UI.Selects.StuntType.onchange = () => AppController.Handlers.toggleStuntUI();
+        App.UI.Selects.TroubleStarter.onchange = () => AppController.Handlers.buildTrouble();
     }
 }
 
 class App {
     static UI = {
         Buttons: {
-            Save: UIHelper.GetElement("save-button"),
+            AddAspect: UIHelper.GetElement("add-aspect-button"),
+            AddCustomAspect: UIHelper.GetElement("add-custom-aspect-button"),
+            AddCustomStunt: UIHelper.GetElement("add-custom-stunt-button"),
+            AddStunt: UIHelper.GetElement("add-stunt-button"),
+            Download: UIHelper.GetElement("download-button"),
             Load: UIHelper.GetElement("load-button"),
             Print: UIHelper.GetElement("print-button"),
-            Download: UIHelper.GetElement("download-button"),
+            Save: UIHelper.GetElement("save-button"),
         },
         Inputs: {
             Name: UIHelper.GetElement("name-input"),
             HighConcept: UIHelper.GetElement("high-concept-input"),
             Trouble: UIHelper.GetElement("trouble-input"),
+            TroubleDetail: UIHelper.GetElement("trouble-detail-input"),
             Aspect: UIHelper.GetElement("aspect-input"),
             Approach: {
                 A: UIHelper.GetElement("approach-a-input"),
@@ -82,6 +118,13 @@ class App {
                 Moderate: UIHelper.GetElement("moderate-consequence-input"),
                 Severe: UIHelper.GetElement("severe-consequence-input"),
             }
+        },
+        Selects: {
+            Adjective: UIHelper.GetElement("adjective-selector"),
+            Class: UIHelper.GetElement("class-selector"),
+            Race: UIHelper.GetElement("race-selector"),
+            StuntType: UIHelper.GetElement("stunt-type"),
+            TroubleStarter: UIHelper.GetElement("trouble-starter"),
         },
         Templates: {
             // style="color:#333; margin:0; text-transform:none;"
@@ -125,7 +168,7 @@ class AppController {
             const t = UIHelper.GetElement("aspect-template").value;
             const d = UIHelper.GetElement("aspect-detail").value.trim();
             if (t || d) {
-                currentHero.Aspects.push(t ? `${t} ${d || "..."}` : d);
+                currentCharacter.Aspects.push(t ? `${t} ${d || "..."}` : d);
                 AppController.renderLists();
                 AppController.updateJSON();
             }
@@ -137,27 +180,27 @@ class AppController {
             const stunt = type === "bonus" ?
                 `Because I ${reason}, I get +2 to ${UIHelper.GetElement("stunt-approach").value} when I ${UIHelper.GetElement("stunt-circumstance").value || "..."}.` :
                 `Because I ${reason}, once per session I can ${UIHelper.GetElement("stunt-action").value || "..."}.`;
-            currentHero.Stunts.push(stunt);
+            currentCharacter.Stunts.push(stunt);
             AppController.renderLists();
             AppController.updateJSON();
         },
 
         addListItem: (type) => {
-            currentHero[type].push("");
+            currentCharacter[type].push("");
             AppController.renderLists();
             AppController.updateJSON();
         },
 
         buildConcept: () => {
             const full = [
-                UIHelper.GetElement("guide-adj").value,
-                UIHelper.GetElement("guide-race").value,
-                UIHelper.GetElement("guide-class").value
+                UIHelper.GetElement("adjective-selector").value,
+                UIHelper.GetElement("race-selector").value,
+                UIHelper.GetElement("class-selector").value
             ].filter(Boolean).join(" ");
 
             if (full) {
-                UIHelper.GetElement("ui-HighConcept").value = full;
-                AppController.Handlers.updateHero("HighConcept", full);
+                UIHelper.GetElement("high-concept-input").value = full;
+                AppController.Handlers.updateCharacter("HighConcept", full);
             }
         },
 
@@ -166,8 +209,8 @@ class AppController {
             const s = UIHelper.GetElement("trouble-suffix").value.trim();
             const full = p === "Too" ? `Too ${s || "[...]"} for my own good` : (p && s ? `${p} ${s}` : s || p);
             if (full) {
-                UIHelper.GetElement("ui-Trouble").value = full;
-                AppController.Handlers.updateHero("Trouble", full);
+                UIHelper.GetElement("trouble-input").value = full;
+                AppController.Handlers.updateCharacter("Trouble", full);
             }
         },
 
@@ -175,11 +218,11 @@ class AppController {
             const a = document.createElement("a");
             a.href = URL.createObjectURL(
                 new Blob(
-                    [JSON.stringify(currentHero, null, 2)],
+                    [JSON.stringify(currentCharacter, null, 2)],
                     { type: "application/json" }
                 )
             );
-            a.download = `${currentHero.Name || "hero"}.json`;
+            a.download = `${currentCharacter.Name || "hero"}.json`;
             a.click();
         },
 
@@ -187,17 +230,17 @@ class AppController {
             const data = localStorage.getItem(AppData.STORAGE_KEY);
             if (!data) { return; }
 
-            currentHero = Object.assign(new FAECharacter(MyConfig), JSON.parse(data));
+            currentCharacter = Object.assign(new FAECharacter(MyConfig), JSON.parse(data));
 
-            UIHelper.GetElement("name-input").value = currentHero.Name;
-            UIHelper.GetElement("high-concept-input").value = currentHero.HighConcept;
-            UIHelper.GetElement("trouble-input").value = currentHero.Trouble;
-            UIHelper.GetElement("notes-input").value = currentHero.Notes;
-            UIHelper.GetElement("refresh-input").value = currentHero.Refresh;
-            UIHelper.GetElement("fate-point-input").value = currentHero.FatePoints;
-            UIHelper.GetElement("mild-consequence-input").value = currentHero.Consequences.Mild;
-            UIHelper.GetElement("moderate-consequence-input").value = currentHero.Consequences.Moderate;
-            UIHelper.GetElement("severe-consequence-input").value = currentHero.Consequences.Severe;
+            UIHelper.GetElement("name-input").value = currentCharacter.Name;
+            UIHelper.GetElement("high-concept-input").value = currentCharacter.HighConcept;
+            UIHelper.GetElement("trouble-input").value = currentCharacter.Trouble;
+            UIHelper.GetElement("notes-input").value = currentCharacter.Notes;
+            UIHelper.GetElement("refresh-input").value = currentCharacter.Refresh;
+            UIHelper.GetElement("fate-point-input").value = currentCharacter.FatePoints;
+            UIHelper.GetElement("mild-consequence-input").value = currentCharacter.Consequences.Mild;
+            UIHelper.GetElement("moderate-consequence-input").value = currentCharacter.Consequences.Moderate;
+            UIHelper.GetElement("severe-consequence-input").value = currentCharacter.Consequences.Severe;
 
             AppController.init();
             AppController.showStatus("Loaded.");
@@ -208,18 +251,18 @@ class AppController {
         },
 
         removeListItem: (t, i) => {
-            currentHero[t].splice(i, 1);
+            currentCharacter[t].splice(i, 1);
             AppController.renderLists();
             AppController.updateJSON();
         },
 
         saveHero: () => {
-            localStorage.setItem(AppData.STORAGE_KEY, JSON.stringify(currentHero));
+            localStorage.setItem(AppData.STORAGE_KEY, JSON.stringify(currentCharacter));
             AppController.showStatus("Saved.");
         },
 
         toggleStress: (i) => {
-            currentHero.Stress[i] = !currentHero.Stress[i];
+            currentCharacter.Stress[i] = !currentCharacter.Stress[i];
             AppController.renderStress();
             AppController.updateJSON();
         },
@@ -231,27 +274,27 @@ class AppController {
         },
 
         updateApproach: (a, v) => {
-            currentHero.ApproachValues[a] = parseInt(v);
+            currentCharacter.ApproachValues[a] = parseInt(v);
             AppController.updateJSON();
         },
 
         updateConsequence: (l, v) => {
-            currentHero.Consequences[l] = v;
+            currentCharacter.Consequences[l] = v;
             AppController.updateJSON();
         },
 
-        updateHero: (f, v) => {
-            currentHero[f] = v;
+        updateCharacter: (f, v) => {
+            currentCharacter[f] = v;
 
             switch (f) {
                 case "HighConcept":
-                    AppController.mirrorPrintFields(v, "print-HighConcept");
+                    AppController.mirrorPrintFields(v, "high-concept-display");
                     break;
                 case "Trouble":
-                    AppController.mirrorPrintFields(v, "print-Trouble");
+                    AppController.mirrorPrintFields(v, "trouble-display");
                     break;
                 case "Notes":
-                    AppController.mirrorPrintFields(v, "print-Notes");
+                    AppController.mirrorPrintFields(v, "notes-display");
                     break;
             }
 
@@ -259,12 +302,16 @@ class AppController {
         },
 
         updateListItem: (t, i, v) => {
-            currentHero[t][i] = v;
+            currentCharacter[t][i] = v;
             AppController.updateJSON();
         },
     };
 
     static init() {
+        console.log("AppController.init()");
+
+        UIHelper.RegisterUI();
+
         AppController.renderApproaches();
         AppController.renderLists();
         AppController.renderStress();
@@ -278,20 +325,20 @@ class AppController {
     }
 
     static populateStuntApproaches() {
-        UIHelper.GetElement("stunt-approach").innerHTML = currentHero.Config.Approaches.map(a => `<option value="${a}">${a}</option>`).join("");
+        UIHelper.GetElement("stunt-approach").innerHTML = currentCharacter.Config.Approaches.map(a => `<option value="${a}">${a}</option>`).join("");
     }
 
     static renderApproaches() {
-        UIHelper.GetElement("approach-list").innerHTML = currentHero.Config.Approaches.map(appr => `
+        UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map(appr => `
             <div class="approach-row">
                 <label style="color:#333; margin:0; text-transform:none;">${appr}</label>
-                <input type="number" value="${currentHero.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach("${appr}", this.value)">
+                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach("${appr}", this.value)">
             </div>
         `).join("");
     }
 
     static renderLists() {
-        UIHelper.GetElement("aspect-list").innerHTML = currentHero.Aspects.map((val, i) => `
+        UIHelper.GetElement("aspect-list").innerHTML = currentCharacter.Aspects.map((val, i) => `
             <div class="list-item">
                 <input type="text" value="${val}" oninput="updateListItem("Aspects", ${i}, this.value)" class="no-print">
                 <div class="print-only">${val}</div>
@@ -299,7 +346,7 @@ class AppController {
             </div>
         `).join("");
 
-        UIHelper.GetElement("stunt-list").innerHTML = currentHero.Stunts.map((val, i) => `
+        UIHelper.GetElement("stunt-list").innerHTML = currentCharacter.Stunts.map((val, i) => `
             <div class="list-item">
                 <input type="text" value="${val}" oninput="updateListItem("Stunts", ${i}, this.value)" class="no-print">
                 <div class="print-only">${val}</div>
@@ -309,7 +356,7 @@ class AppController {
     }
 
     static renderStress() {
-        UIHelper.GetElement("stress-track").innerHTML = currentHero.Stress.map((checked, i) => `
+        UIHelper.GetElement("stress-track").innerHTML = currentCharacter.Stress.map((checked, i) => `
             <div class="stress-box ${checked ? "checked" : ""}" onclick="toggleStress(${i})">${i + 1}</div>
         `).join("");
     }
@@ -319,8 +366,8 @@ class AppController {
     }
 
     static updateJSON() {
-        UIHelper.GetElement("json-output").innerText = JSON.stringify(currentHero, null, 2);
+        UIHelper.GetElement("json-output").innerText = JSON.stringify(currentCharacter, null, 2);
     };
 }
 
-export { App, AppController, currentHero }
+export { App, AppController, currentCharacter as currentHero }
