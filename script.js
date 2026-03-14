@@ -332,8 +332,6 @@ class AppController {
     };
 
     static init() {
-        console.log("AppController.init()");
-
         UIHelper.RegisterUI();
 
         AppController.renderApproaches();
@@ -396,7 +394,7 @@ class AppController {
     static renderApproaches() {
         UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => `
             <div class="approach-row">
-                <label style="color:#333; margin:0; text-transform:none;">${appr}</label>
+                <label>${appr}</label>
                 <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach("${appr}", this.value)">
             </div>
         `).join("");

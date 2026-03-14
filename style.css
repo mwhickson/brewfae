@@ -4,22 +4,18 @@
     --bg-app: white;
     --bg-print: white;
     --text: #333;
-    /*
-    --bg: #f4f4f9;
-    --card-bg: #fff;
-    --danger: #e74c3c;
-    --primary: #2c3e50;
-    --success: #27ae60;
-    */
 }
 
 body {
     background: var(--bg);
     color: var(--text);
-    font-family: system-ui, sans-serif;
-    font-size: 0.85rem;
     margin: 0;
     padding: 10px;
+}
+
+body, textarea {
+    font-family: system-ui, sans-serif;
+    font-size: 0.85rem;
 }
 
 #app {
@@ -167,7 +163,6 @@ label {
     font-size: 0.75rem;
     font-weight: bold;
     margin-bottom: 2px;
-    text-transform: uppercase;
 }
 
 input,
@@ -190,8 +185,10 @@ select {
 .approach-row {
     align-items: center;
     background: #f8fafc;
+    /*
     border-left: 3px solid var(--accent);
     border-radius: 4px;
+    */
     display: flex;
     justify-content: space-between;
     padding: 4px 8px;
@@ -240,10 +237,10 @@ select {
 }
 
 button {
-    /* background: var(--accent); */
+    background: var(--accent);
     border-radius: 4px;
     border: none;
-    /* color: white; */
+    color: white;
     cursor: pointer;
     font-size: 0.75rem;
     font-weight: 600;
