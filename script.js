@@ -6,9 +6,18 @@ import { data } from "./data.js";
 const AppData = data;
 
 class BrewConfig {
-    constructor(Name = "", Approaches = [""]) {
-        this.Name = Name ?? "Fantasy";
-        this.Approaches = Approaches ?? ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"];
+    constructor(
+        Name = null,
+        Settings = { Adjectives: null, Approaches: null, Aspects: null, Classes: null, Races: null, Scores: null, Troubles: null}
+    ) {
+        this.Name = Name ?? "";
+        this.Adjectives = Settings.Adjectives ?? AppData.adjectives;
+        this.Approaches = Settings.Approaches ?? AppData.approaches;
+        this.Aspects = Settings.Aspects ?? AppData.aspects;
+        this.Classes = Settings.Classes ?? AppData.classes;
+        this.Races = Settings.Races ?? AppData.races;
+        this.Scores = Settings.Scores ?? AppData.scores;
+        this.Troubles = Settings.Troubles ?? AppData.troubles;
     }
 }
 
@@ -39,11 +48,26 @@ class FAECharacter {
         this.Consequences = { Mild: "", Moderate: "", Severe: "" };
         this.Config = config;
         this.ApproachValues = {};
-        this.Config.Approaches.forEach(a => this.ApproachValues[a] = 0);
+        this.Config.Approaches.forEach(
+            (a) => {
+                this.ApproachValues[a] = 0;
+            }
+        );
     }
 }
 
-const MyConfig = new BrewConfig();
+const FantasySettings = {
+    // Adjectives: null,
+    Approaches: ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"],
+    // Aspects: null,
+    // Classes: null,
+    // Races: null,
+    // Scores: null,
+    // Troubles: null,
+};
+
+const MyConfig = new BrewConfig("Fantasy", FantasySettings);
+
 let currentCharacter = new FAECharacter(MyConfig);
 
 class UIHelper {
@@ -166,7 +190,7 @@ class AppController {
     static Handlers = {
         addGuidedAspect: () => {
             const t = UIHelper.GetElement("aspect-template").value;
-            const d = UIHelper.GetElement("aspect-detail").value.trim();
+            const d = UIHelper.GetElement("aspect-input").value.trim();
             if (t || d) {
                 currentCharacter.Aspects.push(t ? `${t} ${d || "..."}` : d);
                 AppController.renderLists();
@@ -205,8 +229,8 @@ class AppController {
         },
 
         buildTrouble: () => {
-            const p = UIHelper.GetElement("trouble-prefix").value;
-            const s = UIHelper.GetElement("trouble-suffix").value.trim();
+            const p = UIHelper.GetElement("trouble-starter").value;
+            const s = UIHelper.GetElement("trouble-detail-input").value.trim();
             const full = p === "Too" ? `Too ${s || "[...]"} for my own good` : (p && s ? `${p} ${s}` : s || p);
             if (full) {
                 UIHelper.GetElement("trouble-input").value = full;
@@ -315,7 +339,7 @@ class AppController {
         AppController.renderApproaches();
         AppController.renderLists();
         AppController.renderStress();
-        AppController.populateStuntApproaches();
+        AppController.populateAll();
         AppController.updateJSON();
     }
 
@@ -324,12 +348,53 @@ class AppController {
         dest.innerText = v;
     }
 
+    static populateAdjectives() {
+        UIHelper.GetElement("adjective-selector").innerHTML = "<option></option>" + currentCharacter.Config.Adjectives.map(
+            (a) => `<option>${a}</option>`
+        ).join("");
+    }
+
+    static populateAspects() {
+        UIHelper.GetElement("aspect-template").innerHTML = "<option></option>" + currentCharacter.Config.Aspects.map(
+            (a) => `<option value="${a.value}">${a.text}</option>`
+        ).join("");
+    }
+
+    static populateClasses() {
+        UIHelper.GetElement("class-selector").innerHTML = "<option></option>" + currentCharacter.Config.Classes.map(
+            (c) => `<option>${c}</option>`
+        ).join("");
+    }
+
+    static populateRaces() {
+        UIHelper.GetElement("race-selector").innerHTML = "<option></option>" + currentCharacter.Config.Races.map(
+            (r) => `<option>${r}</option>`
+        ).join("");
+    }
+
     static populateStuntApproaches() {
-        UIHelper.GetElement("stunt-approach").innerHTML = currentCharacter.Config.Approaches.map(a => `<option value="${a}">${a}</option>`).join("");
+        UIHelper.GetElement("stunt-approach").innerHTML = currentCharacter.Config.Approaches.map(
+            (a) => `<option value="${a}">${a}</option>`
+        ).join("");
+    }
+
+    static populateTroubleStarters() {
+        UIHelper.GetElement("trouble-starter").innerHTML = "<option></option>" + currentCharacter.Config.Troubles.map(
+            (t) => `<option value="${t.value}">${t.text}</option>`
+        ).join("");
+    }
+
+    static populateAll() {
+        AppController.populateAdjectives();
+        AppController.populateAspects();
+        AppController.populateClasses();
+        AppController.populateRaces();
+        AppController.populateStuntApproaches();
+        AppController.populateTroubleStarters();
     }
 
     static renderApproaches() {
-        UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map(appr => `
+        UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => `
             <div class="approach-row">
                 <label style="color:#333; margin:0; text-transform:none;">${appr}</label>
                 <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach("${appr}", this.value)">
