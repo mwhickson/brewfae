@@ -119,6 +119,9 @@ class App {
             Print: UIHelper.GetElement("print-button"),
             Save: UIHelper.GetElement("save-button"),
         },
+        Display: {
+            ScoreArray: UIHelper.GetElement("score-array"),
+        },
         Inputs: {
             Name: UIHelper.GetElement("name-input"),
             HighConcept: UIHelper.GetElement("high-concept-input"),
@@ -370,6 +373,10 @@ class AppController {
         ).join("");
     }
 
+    static populateScoreArray() {
+        UIHelper.GetElement("score-array").innerHTML = currentCharacter.Config.Scores.join(", ");
+    }
+
     static populateStuntApproaches() {
         UIHelper.GetElement("stunt-approach").innerHTML = currentCharacter.Config.Approaches.map(
             (a) => `<option value="${a}">${a}</option>`
@@ -387,6 +394,7 @@ class AppController {
         AppController.populateAspects();
         AppController.populateClasses();
         AppController.populateRaces();
+        AppController.populateScoreArray();
         AppController.populateStuntApproaches();
         AppController.populateTroubleStarters();
     }

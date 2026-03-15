@@ -12,8 +12,17 @@
 
     <div id="app">
         <header class="no-print">
-            <h1>Custom Fate Accelerated Character Sheet</h1>
+            <h1 style="font-size: 0.75rem; text-transform: uppercase;">Custom Fate Accelerated Character Sheet</h1>
             <div id="save-status"></div>
+
+            <nav class="no-print">
+                <ul class="menu">
+                    <li><a id="load-button">Load</a></li>
+                    <li><a id="download-button">Download JSON</a></li>
+                    <li><a id="save-button">Save</a></li>
+                    <li><a id="print-button">Print PDF</a></li>
+                </ul>
+            </nav>
         </header>
 
         <div class="dashboard">
@@ -26,7 +35,7 @@
 
                 <div class="form-group">
                     <label>High Concept</label>
-                    <div class="high-concept-guide-container builder-card no-print">
+                    <div class="no-print">
                         <div class="high-concept-guide-ui">
                             <select id="adjective-selector"><option></option></select>
                             <select id="race-selector"><option></option></select>
@@ -39,7 +48,7 @@
 
                 <div class="form-group">
                     <label>Trouble</label>
-                    <div class="trouble-guide-container builder-card no-print">
+                    <div class="no-print">
                         <div class="trouble-guide-ui">
                             <select id="trouble-starter"><option></option></select>
                             <input id="trouble-detail-input" type="text" placeholder="Details...">
@@ -49,95 +58,92 @@
                     <div id="trouble-display" class="print-only"></div>
                 </div>
 
-                <h3>Aspects</h3>
-                <div class="aspect-guide-container builder-card no-print">
-                    <div class="aspect-guide-ui">
-                        <select id="aspect-template"><option value=""></option></select>
-                        <input id="aspect-input" type="text" placeholder="Detail...">
-                        <button id="add-aspect-button">+</button>
+                <div class="form-group">
+                    <label>Aspects</label>
+                    <div class="no-print">
+                        <div class="aspect-guide-ui">
+                            <select id="aspect-template"><option value=""></option></select>
+                            <input id="aspect-input" type="text" placeholder="Detail...">
+                            <button id="add-aspect-button">+</button>
+                        </div>
                     </div>
+                    <div id="aspect-list"></div>
+                    <button id="add-custom-aspect-button" class="no-print">Add Custom Aspect</button>
                 </div>
-                <div id="aspect-list"></div>
-                <button id="add-custom-aspect-button" class="no-print">+ Add Custom Aspect</button>
             </section>
 
             <section>
                 <h2>Approaches</h2>
                 <div id="approach-list" class="approach-grid"></div>
-                <div class="no-print"><i>Default Score Values: 3, 2, 2, 1, 1, 0</i></div>
+                <label class="no-print"><small style="display: block; font-style: italic; margin-top: 5px; text-align: center;">default score values: <span id="score-array"></span></small></label>
 
                 <h2>Vitality</h2>
                 <div class="vitality-container">
-                    <div class="flex-1">
+                    <div>
                         <label>Stress Track</label>
                         <div id="stress-track" class="stress-track"></div>
                     </div>
-                    <div class="width-50px">
+                    <div>
                         <label>Refresh</label>
                         <input id="refresh-input" type="number" value="3">
                     </div>
-                    <div class="width-50px">
+                    <div>
                         <label>Fate</label>
                         <input id="fate-point-input" type="number" value="3">
                     </div>
                 </div>
 
-                <h2>Notes</h2>
-                <textarea id="notes-input" rows="12" placeholder="Session notes, gear, etc..." class="no-print"></textarea>
-                <div id="notes-display" class="print-only"></div>
+                <h2>Consequences</h2>
+                <div class="form-group">
+                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)">
+                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)">
+                    <input id="severe-consequence-input" type="text" placeholder="Severe (6)">
+                </div>
             </section>
 
             <section>
                 <h2>Stunts</h2>
-                <div class="stunt-guide-container builder-card no-print">
-                    <select id="stunt-type">
-                        <option value="bonus">Bonus (+2)</option>
-                        <option value="special">Session Power</option>
-                    </select>
-
-                    <div class="stunt-guide-ui">
-                        Because I <input id="stunt-reason" class="width-325px" type="text" placeholder="...">,
-                        <br>
-                        <span id="stunt-ui-bonus">I get +2 to act when I use
-                            <select id="stunt-approach" class="width-80px"></select> to
-                            <input id="stunt-circumstance" type="text" class="width-150px"></span>
-
-                        <span id="stunt-ui-special" style="display:none">once per session I can
-                            <input id="stunt-action" type="text" class="width-250px">
-                        </span>
-                    </div>
-                    <button id="add-stunt-button">Add Stunt</button>
-                </div>
-                <div id="stunt-list"></div>
-                <button id="add-custom-stunt-button" class="no-print">+ Add Custom Stunt</button>
-
-                <h2>Consequences</h2>
                 <div class="form-group">
-                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)" class="margin-bottom-4px">
-                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)" class="margin-bottom-4px">
-                    <input id="severe-consequence-input" type="text" placeholder="Severe (6)">
-                </div>
+                    <div class="no-print">
+                        <select id="stunt-type">
+                            <option value="bonus">Bonus (+2)</option>
+                            <option value="special">Session Power</option>
+                        </select>
 
-                <div class="feature-buttons no-print">
-                    <div class="btn-group">
-                        <button id="save-button">Save</button>
-                        <button id="load-button">Load</button>
-                        <button id="print-button">Print PDF</button>
-                        <button id="download-button">Download JSON</button>
+                        <div class="stunt-guide-ui">
+                            Because I <input id="stunt-reason" type="text" placeholder="...">,
+                            <br>
+                            <span id="stunt-ui-bonus">I get +2 to act when I use
+                                <select id="stunt-approach"></select> to
+                                <input id="stunt-circumstance" type="text"></span>
+
+                            <span id="stunt-ui-special" style="display:none">once per session I can
+                                <input id="stunt-action" type="text">
+                            </span>
+                        </div>
+                        <button id="add-stunt-button">Add Stunt</button>
                     </div>
-                </div>
-
-                <div class="no-print">
-                    <h2>Resources</h2>
-                    <ul class="link-list">
-                        <li><a target="_blank" href="https://evilhat.com/product/fate-accelerated-edition/">Fate Accelerated Edition at Evil Hat Productions</a></li>
-                        <li><a target="_blank" href="https://fate-srd.com/fate-accelerated">Fate Accelerated SRD at Fate SRD</a></li>
-                        <li><a target="_blank" href="https://fate-srd.com/stuntmaker/index.html">Fate RPG Stuntmaker</a></li>
-                        <li><a target="_blank" href="https://mwhickson.github.io/brewfae/">Custom FAE Character Creation Tool</a> (this page)</li>
-                        <li><a target="_blank" href="https://github.com/mwhickson/brewfae/">Custom FAE Character Creation Tool</a> (GitHub)</li>
-                    </ul>
+                    <div id="stunt-list"></div>
+                    <button id="add-custom-stunt-button" class="no-print">Add Custom Stunt</button>
                 </div>
             </section>
+        </div>
+
+        <hr>
+
+        <h2 class="print-only">Notes</h2>
+        <textarea id="notes-input" rows="10" placeholder="Session notes, gear, etc..." class="no-print"></textarea>
+        <div id="notes-display" class="print-only"></div>
+
+        <div class="no-print">
+            <h2 style="display: none;">Resources</h2>
+            <ul class="menu">
+                <li><a target="_blank" href="https://evilhat.com/product/fate-accelerated-edition/">Evil Hat Productions</a></li>
+                <li><a target="_blank" href="https://fate-srd.com/fate-accelerated">Fate SRD</a></li>
+                <li><a target="_blank" href="https://fate-srd.com/stuntmaker/index.html">Fate RPG Stuntmaker</a></li>
+                <li><a target="_blank" href="https://mwhickson.github.io/brewfae/">Character Creation Tool</a></li>
+                <li><a target="_blank" href="https://github.com/mwhickson/brewfae/">GitHub</a></li>
+            </ul>
         </div>
     </div>
 
