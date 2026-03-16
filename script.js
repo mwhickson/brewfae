@@ -147,11 +147,14 @@ class AppController {
     static Handlers = {
         addGuidedAspect: () => {
             const t = UIHelper.GetElement("aspect-template").value;
-            const d = App.UI.Inputs.Aspect.value?.trim(); //UIHelper.GetElement("aspect-input").value.trim();
+            const d = App.UI.Inputs.Aspect.value?.trim();
             if (t || d) {
                 currentCharacter.Aspects.push(t ? `${t} ${d || "..."}` : d);
                 AppController.renderLists();
                 AppController.updateJSON();
+
+                App.UI.Inputs.Aspect.value = "";
+                App.UI.Inputs.Aspect.focus();
             }
         },
 
@@ -164,6 +167,12 @@ class AppController {
             currentCharacter.Stunts.push(stunt);
             AppController.renderLists();
             AppController.updateJSON();
+
+            UIHelper.GetElement("stunt-reason").value = "";
+            UIHelper.GetElement("stunt-approach").value = null;
+            UIHelper.GetElement("stunt-circumstance").value = "";
+            UIHelper.GetElement("stunt-action").value = "";
+            UIHelper.GetElement("stunt-reason").focus();
         },
 
         addListItem: (type) => {
@@ -225,6 +234,7 @@ class AppController {
         },
 
         printCharacter: () => {
+            AppController.renderLists(); // make sure that Aspects and Stunts are up to date
             window.print();
         },
 
@@ -252,6 +262,7 @@ class AppController {
         },
 
         updateApproach: (a, v) => {
+            console.log("updateApproach", a, v); // DEBUG:
             currentCharacter.ApproachValues[a] = parseInt(v);
             AppController.updateJSON();
         },
@@ -354,7 +365,7 @@ class AppController {
         UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => `
             <div class="approach-row">
                 <label>${appr}</label>
-                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="controller.Handlers.updateApproach("${appr}", this.value)">
+                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="controller.Handlers.updateApproach('${appr}', this.value)">
             </div>
         `).join("");
     }
