@@ -3,6 +3,7 @@
     --bg: white;
     --bg-print: white;
     --border: #eee;
+    --danger: #900;
     --semi-bold: 600;
     --text: #333;
     --text2: #777;
@@ -28,6 +29,10 @@ button {
     color: var(--text-inverse);
     font-weight: var(--semi-bold);
     padding: 10px;
+}
+
+button.danger {
+    background: var(--danger);
 }
 
 h2 {
@@ -88,6 +93,11 @@ select {
 .aspect-guide-ui {
     display: flex;
     gap: 5px;
+}
+
+.consequences-grid {
+    display: grid;
+    grid-template-columns: max-content 1fr;
 }
 
 .dashboard {
@@ -195,9 +205,9 @@ select {
 }
 
 .vitality-container {
-    align-items: flex-end;
-    display: flex;
+    display: grid;
     gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 @media print {

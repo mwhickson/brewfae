@@ -68,7 +68,6 @@
                         </div>
                     </div>
                     <div id="aspect-list"></div>
-                    <button id="add-custom-aspect-button" class="no-print">Add Custom Aspect</button>
                 </div>
             </section>
 
@@ -83,21 +82,21 @@
                         <label>Stress Track</label>
                         <div id="stress-track" class="stress-track"></div>
                     </div>
-                    <div>
+                    <div style="text-align: right;">
                         <label>Refresh</label>
-                        <input id="refresh-input" type="number" value="3">
+                        <input id="refresh-input" type="number" value="3" style="text-align: right;">
                     </div>
-                    <div>
+                    <div style="text-align: right;">
                         <label>Fate</label>
-                        <input id="fate-point-input" type="number" value="3">
+                        <input id="fate-point-input" type="number" value="3" style="text-align: right;">
                     </div>
                 </div>
 
                 <h2>Consequences</h2>
-                <div class="form-group">
-                    <input id="mild-consequence-input" type="text" placeholder="Mild (2)">
-                    <input id="moderate-consequence-input" type="text" placeholder="Moderate (4)">
-                    <input id="severe-consequence-input" type="text" placeholder="Severe (6)">
+                <div class="consequences-grid form-group">
+                    <label style="margin-right: 10px;">Mild (2)</label><input id="mild-consequence-input" type="text">
+                    <label style="margin-right: 10px;">Moderate (4)</label><input id="moderate-consequence-input" type="text">
+                    <label style="margin-right: 10px;">Severe (6)</label><input id="severe-consequence-input" type="text">
                 </div>
             </section>
 
@@ -111,20 +110,25 @@
                         </select>
 
                         <div class="stunt-guide-ui">
-                            Because I <input id="stunt-reason" type="text" placeholder="...">,
-                            <br>
-                            <span id="stunt-ui-bonus">I get +2 to act when I use
-                                <select id="stunt-approach"></select> to
-                                <input id="stunt-circumstance" type="text"></span>
+                            <div style="margin-bottom: 3px;">
+                                Because I ...
+                                <input id="stunt-reason" type="text" placeholder="can do a thing/have an item">
+                            </div>
+                            <div style="display: flex;">
+                                <span id="stunt-ui-bonus">I get +2 to act when I use
+                                    <select id="stunt-approach" style="width: auto;"></select> to
+                                    <input id="stunt-circumstance" type="text"></span>
 
-                            <span id="stunt-ui-special" style="display:none">once per session I can
-                                <input id="stunt-action" type="text">
-                            </span>
+                                <span id="stunt-ui-special" style="display:none">once per session I can
+                                    <input id="stunt-action" type="text">
+                                </span>
+                            </div>
                         </div>
-                        <button id="add-stunt-button">Add Stunt</button>
+                        <div style="text-align: right;">
+                            <button id="add-stunt-button">Add Stunt</button>
+                        </div>
                     </div>
                     <div id="stunt-list"></div>
-                    <button id="add-custom-stunt-button" class="no-print">Add Custom Stunt</button>
                 </div>
             </section>
         </div>
@@ -147,9 +151,13 @@
         </div>
     </div>
 
+    <script>
+        var controller = null;
+    </script>
     <script type="module">
         import { AppController } from "./script.js";
-        window.onload = AppController.init;
+        controller = AppController;
+        window.onload = controller.init;
     </script>
 </body>
 

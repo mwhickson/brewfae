@@ -56,16 +56,7 @@ class FAECharacter {
     }
 }
 
-const FantasySettings = {
-    // Adjectives: null,
-    Approaches: ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"],
-    // Aspects: null,
-    // Classes: null,
-    // Races: null,
-    // Scores: null,
-    // Troubles: null,
-};
-
+const FantasySettings = { Approaches: ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"], };
 const MyConfig = new BrewConfig("Fantasy", FantasySettings);
 
 let currentCharacter = new FAECharacter(MyConfig);
@@ -77,8 +68,6 @@ class UIHelper {
 
     static RegisterUI() {
         App.UI.Buttons.AddAspect.onclick = AppController.Handlers.addGuidedAspect;
-        App.UI.Buttons.AddCustomAspect.onclick = AppController.Handlers.addListItem('Aspects');
-        App.UI.Buttons.AddCustomStunt.onclick = AppController.Handlers.addListItem('Stunts');
         App.UI.Buttons.AddStunt.onclick = AppController.Handlers.addGuidedStunt;
         App.UI.Buttons.Download.onclick = AppController.Handlers.downloadJSON;
         App.UI.Buttons.Load.onclick = AppController.Handlers.loadHero;
@@ -111,8 +100,6 @@ class App {
     static UI = {
         Buttons: {
             AddAspect: UIHelper.GetElement("add-aspect-button"),
-            AddCustomAspect: UIHelper.GetElement("add-custom-aspect-button"),
-            AddCustomStunt: UIHelper.GetElement("add-custom-stunt-button"),
             AddStunt: UIHelper.GetElement("add-stunt-button"),
             Download: UIHelper.GetElement("download-button"),
             Load: UIHelper.GetElement("load-button"),
@@ -153,39 +140,6 @@ class App {
             StuntType: UIHelper.GetElement("stunt-type"),
             TroubleStarter: UIHelper.GetElement("trouble-starter"),
         },
-        Templates: {
-            // style="color:#333; margin:0; text-transform:none;"
-            //  onchange="updateApproach("${appr}", this.value)"
-            Approach: `
-                <div class="approach-row">
-                    <label>{{LABEL}}</label>
-                    <input id="approach-{{TAG}}-input" type="number" value="{{VALUE}}" min="0" max="5">
-                </div>
-            `.trim(),
-            // oninput="updateListItem("Aspects", ${i}, this.value)"
-            // onclick="removeListItem("Aspects", ${i})"
-            Aspect: `
-                <div class="list-item">
-                    <input type="text" value="{{VALUE}}" class="no-print">
-                    <div class="print-only">{{VALUE}}</div>
-                    <button class="danger no-print">×</button>
-                </div>
-            `.trim(),
-            // ${checked ? "checked" : ""}
-            // onclick="toggleStress(${i})"
-            StressBox: `
-                <div id="stress-box-{{VALUE}}" class="stress-box">{{VALUE}}</div>
-            `.trim(),
-            // oninput="updateListItem("Stunts", ${i}, this.value)"
-            // onclick="removeListItem("Stunts", ${i})"
-            Stunt: `
-                <div class="list-item">
-                    <input type="text" value="{{VALUE}}" class="no-print">
-                    <div class="print-only">{{VALUE}}</div>
-                    <button class="danger no-print">×</button>
-                </div>
-            `.trim(),
-        }
     }
 }
 
@@ -193,7 +147,7 @@ class AppController {
     static Handlers = {
         addGuidedAspect: () => {
             const t = UIHelper.GetElement("aspect-template").value;
-            const d = UIHelper.GetElement("aspect-input").value.trim();
+            const d = App.UI.Inputs.Aspect.value?.trim(); //UIHelper.GetElement("aspect-input").value.trim();
             if (t || d) {
                 currentCharacter.Aspects.push(t ? `${t} ${d || "..."}` : d);
                 AppController.renderLists();
@@ -220,23 +174,23 @@ class AppController {
 
         buildConcept: () => {
             const full = [
-                UIHelper.GetElement("adjective-selector").value,
-                UIHelper.GetElement("race-selector").value,
-                UIHelper.GetElement("class-selector").value
+                App.UI.Selects.Adjective.value,
+                App.UI.Selects.Race.value,
+                App.UI.Selects.Class.value
             ].filter(Boolean).join(" ");
 
             if (full) {
-                UIHelper.GetElement("high-concept-input").value = full;
+                App.UI.Inputs.HighConcept.value = full;
                 AppController.Handlers.updateCharacter("HighConcept", full);
             }
         },
 
         buildTrouble: () => {
-            const p = UIHelper.GetElement("trouble-starter").value;
-            const s = UIHelper.GetElement("trouble-detail-input").value.trim();
+            const p = App.UI.Selects.TroubleStarter.value;
+            const s = App.UI.Inputs.TroubleDetail.value?.trim();
             const full = p === "Too" ? `Too ${s || "[...]"} for my own good` : (p && s ? `${p} ${s}` : s || p);
             if (full) {
-                UIHelper.GetElement("trouble-input").value = full;
+                App.UI.Inputs.Trouble.value = full;
                 AppController.Handlers.updateCharacter("Trouble", full);
             }
         },
@@ -244,12 +198,9 @@ class AppController {
         downloadJSON: () => {
             const a = document.createElement("a");
             a.href = URL.createObjectURL(
-                new Blob(
-                    [JSON.stringify(currentCharacter, null, 2)],
-                    { type: "application/json" }
-                )
+                new Blob([JSON.stringify(currentCharacter, null, 2)], { type: "application/json" })
             );
-            a.download = `${currentCharacter.Name || "hero"}.json`;
+            a.download = `${currentCharacter.Name?.trim().replaceAll(/\s/g, "-").toLocaleLowerCase() || "fae-character"}.json`;
             a.click();
         },
 
@@ -378,7 +329,7 @@ class AppController {
     }
 
     static populateStuntApproaches() {
-        UIHelper.GetElement("stunt-approach").innerHTML = currentCharacter.Config.Approaches.map(
+        UIHelper.GetElement("stunt-approach").innerHTML = "<option></option>" + currentCharacter.Config.Approaches.map(
             (a) => `<option value="${a}">${a}</option>`
         ).join("");
     }
@@ -403,7 +354,7 @@ class AppController {
         UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => `
             <div class="approach-row">
                 <label>${appr}</label>
-                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="updateApproach("${appr}", this.value)">
+                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="controller.Handlers.updateApproach("${appr}", this.value)">
             </div>
         `).join("");
     }
@@ -411,24 +362,24 @@ class AppController {
     static renderLists() {
         UIHelper.GetElement("aspect-list").innerHTML = currentCharacter.Aspects.map((val, i) => `
             <div class="list-item">
-                <input type="text" value="${val}" oninput="updateListItem("Aspects", ${i}, this.value)" class="no-print">
+                <input type="text" value="${val}" oninput="controller.Handlers.updateListItem('Aspects', ${i}, this.value)" class="no-print">
                 <div class="print-only">${val}</div>
-                <button class="danger no-print" onclick="removeListItem("Aspects", ${i})">×</button>
+                <button class="danger no-print" onclick="controller.Handlers.removeListItem('Aspects', ${i})">×</button>
             </div>
         `).join("");
 
         UIHelper.GetElement("stunt-list").innerHTML = currentCharacter.Stunts.map((val, i) => `
             <div class="list-item">
-                <input type="text" value="${val}" oninput="updateListItem("Stunts", ${i}, this.value)" class="no-print">
+                <input type="text" value="${val}" oninput="controller.Handlers.updateListItem('Stunts', ${i}, this.value)" class="no-print">
                 <div class="print-only">${val}</div>
-                <button class="danger no-print" onclick="removeListItem("Stunts", ${i})">×</button>
+                <button class="danger no-print" onclick="controller.Handlers.removeListItem('Stunts', ${i})">×</button>
             </div>
         `).join("");
     }
 
     static renderStress() {
         UIHelper.GetElement("stress-track").innerHTML = currentCharacter.Stress.map((checked, i) => `
-            <div class="stress-box ${checked ? "checked" : ""}" onclick="toggleStress(${i})">${i + 1}</div>
+            <div class="stress-box ${checked ? "checked" : ""}" onclick="controller.Handlers.toggleStress(${i})">${i + 1}</div>
         `).join("");
     }
 
