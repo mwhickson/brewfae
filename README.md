@@ -2,40 +2,43 @@
 
 ## Overview
 
-A vibe-coded (with [Google Gemini](https://gemini.google.com/)) Fate Accelerated (FAE) character creation tool.
+A guided Fate Accelerated Edition (FAE) character creation tool.
 
-> **2026-03-11:**
->
-> It didn't take long before the Gemini generated app reached a point where Gemini wasn't effective at maintaining it, and I didn't like the code. To that end, refactoring is in progress.
+Intended to be a custom, easy to use, fantasy-themed FAE character creation tool to guide new players through character creation.
 
-Long story short, I wanted a custom (fantasy) themed FAE character creation tool I could pass off to players to guide them during character creation. I started whipping something up, quickly decided I would rather be crafting play materials and actually running the game instead of writing tooling and here we are.
+> Initially vibe-coded (with [Google Gemini](https://gemini.google.com/)); however, it didn't take long before the generated app reached a point where Gemini wasn't effective at maintaining it. Also, after code review, I didn't like the code and refactored. The initial vibe-coded version did get me over the hurdle of getting started though, and almost got me to where I wanted to go.
 
 ## Features
 
-The tool was originally going to be a "skinnable" character creation tool, using the FAE defaults and allowing things like overriding the `Approach` names, and maybe things like the `Stress` box counts, available `Consequences`, etc. There are still shades of that in the source, but they'd need to be dredged up into something more useful.
+The tool was originally going to be a "skinnable" character creation tool, using the FAE defaults and allowing things like overriding the `Approach` names, and things like the `Stress` box counts, available `Consequences`, etc.
 
-The feature list, as it evolved, came down to:
+I would like to revisit that in future.
 
-- renamed `Approaches`
+A list of current features includes:
+
+- renamed `Approaches` to more closely align with other fantasy RPG attribute names
 - fantasy themed, guided character creation for:
     - `High Concept`
     - `Trouble`
     - `Aspects`
     - `Stunts` (allows for both stunt templates, e.g. `+2` and `once per session`)
-- freeform entry for guided character creation fields
-- saving and loading using `LocalStorage`
+- saving and loading using `LocalStorage` (single character slot)
 - printing (for PDF export)
-- JSON data preview and export
+- JSON data export
+- system aligned light or dark mode
 
 ## TODO
 
-Things I would like, but aren't dealbreakers at present are:
+Future niceties:
 
-- **refactor application for ongoing manual maintenance**
-- character validation
 - random name generation
+- random character generation
+- more character save slots
+- character validation based on scenario/campaign appropriate rules
 - true PDF export
+- multi-genre support (horror, sci-fi, spy, etc.)
 - if I were to release this as a bonafide tool for others, some kind of internationalization/localization support
+- external character JSON parsing utility for things like printing, sharing, VTT imports, etc.
 
 ## Screenshots
 
