@@ -1,13 +1,14 @@
 :root {
-    --accent: black;
-    --bg: white;
-    --bg-print: white;
-    --border: #eee;
-    --danger: #900;
+    color-scheme: light dark;
+    --accent: light-dark(black, white);
+    --bg: light-dark(white, black);
+    --bg-print: light-dark(white, black);
+    --border: light-dark(#eee, #444);
+    --danger: light-dark(#900, #c00);
     --semi-bold: 600;
-    --text: #333;
-    --text2: #777;
-    --text-inverse: white;
+    --text: light-dark(#333, #ccc);
+    --text2: light-dark(#777, #999);
+    --text-inverse: light-dark(white, black);
 }
 
 body {
@@ -208,45 +209,4 @@ select {
     display: grid;
     gap: 10px;
     grid-template-columns: repeat(3, 1fr);
-}
-
-@media print {
-    @page {
-        font-size: 11pt;
-        margin: 1cm;
-        size: landscape;
-    }
-
-    body {
-        background: var(--bg-print);
-        padding: 0;
-    }
-
-    input,
-    textarea {
-        background: transparent !important;
-        border: none !important;
-        color: black !important;
-        padding: 2px 0 !important;
-    }
-
-    #app {
-        border: none;
-        max-width: 100% !important;
-        padding: 0;
-        width: 100%;
-    }
-
-    .approach-row {
-        background: none !important;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .no-print {
-        display: none !important;
-    }
-
-    .print-only {
-        display: block !important;
-    }
 }
