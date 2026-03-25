@@ -56,7 +56,12 @@ class FAECharacter {
     }
 }
 
-const FantasySettings = { Approaches: ["Agility", "Awareness", "Might", "Power", "Presence", "Wits"], };
+// let's use D&D/BRP flavoured approaches
+// (D&D ones worked for Freeport Companion (FATE Edition))
+const FantasySettings = {
+    Approaches: ["Charisma", "Constitution", "Dexterity", "Intelligence", "Power", "Strength"],
+};
+
 const MyConfig = new BrewConfig("Fantasy", FantasySettings);
 
 let currentCharacter = new FAECharacter(MyConfig);

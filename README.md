@@ -33,6 +33,7 @@ Future niceties:
 
 - random name generation
 - random character generation
+- Fate dice roller (4dF)
 - more character save slots
 - character validation based on scenario/campaign appropriate rules
 - true PDF export
