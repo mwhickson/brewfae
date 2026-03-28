@@ -26,13 +26,13 @@ A list of current features includes:
 - printing (for PDF export)
 - JSON data export
 - system aligned light or dark mode
+- random name generation
+- random character generation
 
 ## TODO
 
 Future niceties:
 
-- random name generation
-- random character generation
 - Fate dice roller (4dF)
 - more character save slots
 - character validation based on scenario/campaign appropriate rules
@@ -46,6 +46,10 @@ Future niceties:
 ### Screen UI
 
 ![Screen UI](ui.png)
+
+### Screen UI (dark mode)
+
+![Screen UI (dark mode)](ui-dark.png)
 
 ### Print Output
 
@@ -74,3 +78,4 @@ These are some helpful references for getting/playing FAE.
 * [Fate Accelerated SRD at Fate SRD](https://fate-srd.com/fate-accelerated)
 * [Fate RPG Stuntmaker](https://fate-srd.com/stuntmaker/index.html)
 * [Sunday-Skypers : FATE Sword & Sorcery (example)](https://sunday-skypers.podbean.com/e/fate-sword-sorcery-two-had-adventure-thrust-upon-them/)
+* [Fate Freeport Companion (setting)](https://greenroninstore.com/products/fate-freeport-companion-pdf)
