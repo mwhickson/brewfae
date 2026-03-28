@@ -77,6 +77,13 @@ class UIHelper {
         App.UI.Buttons.Download.onclick = AppController.Handlers.downloadJSON;
         App.UI.Buttons.Load.onclick = AppController.Handlers.loadHero;
         App.UI.Buttons.Print.onclick = AppController.Handlers.printCharacter;
+        App.UI.Buttons.RandomApproaches.onclick = AppController.Handlers.rollRandomApproaches;
+        App.UI.Buttons.RandomAspect.onclick = AppController.Handlers.rollRandomAspect;
+        App.UI.Buttons.RandomCharacter.onclick = AppController.Handlers.rollRandomCharacter;
+        App.UI.Buttons.RandomHighConcept.onclick = AppController.Handlers.rollRandomHighConcept;
+        App.UI.Buttons.RandomName.onclick = AppController.Handlers.rollRandomName;
+        // App.UI.Buttons.RandomStunt.onclick = AppController.Handlers.rollRandomStunt;
+        App.UI.Buttons.RandomTrouble.onclick = AppController.Handlers.rollRandomTrouble;
         App.UI.Buttons.Save.onclick = AppController.Handlers.saveHero;
 
         App.UI.Inputs.Name.oninput = () => AppController.Handlers.updateCharacter("Name", App.UI.Inputs.Name.value);
@@ -109,6 +116,13 @@ class App {
             Download: UIHelper.GetElement("download-button"),
             Load: UIHelper.GetElement("load-button"),
             Print: UIHelper.GetElement("print-button"),
+            RandomApproaches: UIHelper.GetElement("random-approaches-button"),
+            RandomAspect: UIHelper.GetElement("random-aspect-button"),
+            RandomCharacter: UIHelper.GetElement("random-character-button"),
+            RandomHighConcept: UIHelper.GetElement("random-high-concept-button"),
+            RandomName: UIHelper.GetElement("random-name-button"),
+            // RandomStunt: UIHelper.GetElement("random-stunt-button"),
+            RandomTrouble: UIHelper.GetElement("random-trouble-button"),
             Save: UIHelper.GetElement("save-button"),
         },
         Display: {
@@ -249,6 +263,104 @@ class AppController {
             AppController.updateJSON();
         },
 
+        rollRandomApproaches: () => {
+            const scoresCopy = [...AppData.scores];
+            const randomScores = [];
+            for (let i = scoresCopy.length; i--; i > 0) {
+                let index = Math.floor(Math.random() * i);
+                randomScores.push(scoresCopy[index]);
+                scoresCopy.splice(index, 1);
+            }
+
+            let i = 0;
+            Object.keys(currentCharacter.ApproachValues).forEach((approach) => {
+                currentCharacter.ApproachValues[approach] = randomScores[i];
+                i++;
+            });
+
+            AppController.updateJSON();
+
+            UIHelper.GetElement("approach-a-input").value = randomScores[0];
+            UIHelper.GetElement("approach-b-input").value = randomScores[1];
+            UIHelper.GetElement("approach-c-input").value = randomScores[2];
+            UIHelper.GetElement("approach-d-input").value = randomScores[3];
+            UIHelper.GetElement("approach-e-input").value = randomScores[4];
+            UIHelper.GetElement("approach-f-input").value = randomScores[5];
+        },
+
+        rollRandomAspect: () => {
+            const selection = Math.floor(Math.random() * AppData.aspects.length);
+            const selectedAspect = AppData.aspects[selection];
+
+            currentCharacter.Aspects.push(`${selectedAspect.text}`);
+
+            AppController.renderLists();
+            AppController.updateJSON();
+        },
+
+        rollRandomCharacter: () => {
+            AppController.Handlers.rollRandomApproaches();
+
+            currentCharacter.Aspects = [];
+            AppController.Handlers.rollRandomAspect();
+            AppController.Handlers.rollRandomAspect();
+            AppController.Handlers.rollRandomAspect();
+
+            AppController.Handlers.rollRandomHighConcept();
+
+            AppController.Handlers.rollRandomName();
+
+            AppController.Handlers.rollRandomTrouble();
+        },
+
+        rollRandomHighConcept: () => {
+            const selections = {
+                adjective: Math.floor(Math.random() * AppData.adjectives.length),
+                race: Math.floor(Math.random() * AppData.races.length),
+                class: Math.floor(Math.random() * AppData.classes.length),
+            };
+
+            const fragments = [
+                AppData.adjectives[selections.adjective],
+                AppData.races[selections.race],
+                AppData.classes[selections.class],
+            ];
+
+            const concept = fragments.join(" ");
+
+            App.UI.Selects.Adjective.value = fragments[0];
+            App.UI.Selects.Race.value = fragments[1];
+            App.UI.Selects.Class.value = fragments[2];
+
+            App.UI.Inputs.HighConcept.value = concept;
+
+            AppController.Handlers.updateCharacter("HighConcept", concept);
+        },
+
+        rollRandomName: () => {
+            const selection = Math.floor(Math.random() * AppData.names.length);
+            const selectedName = AppData.names[selection];
+            App.UI.Inputs.Name.value = selectedName;
+        },
+
+        // rollRandomStunt: () => {
+        //     console.log("rollRandomStunt()");
+        // },
+
+        rollRandomTrouble: () => {
+            const selection = Math.floor(Math.random() * AppData.troubles.length);
+            const selectedTrouble = AppData.troubles[selection];
+
+            const p = App.UI.Selects.TroubleStarter.value = selectedTrouble.value;
+            const s = App.UI.Inputs.TroubleDetail.value?.trim();
+            const full = p === "Too" ? `Too ${s || "[...]"} for my own good` : (p && s ? `${p} ${s}` : s || p);
+            if (full) {
+                App.UI.Inputs.Trouble.value = full;
+                AppController.Handlers.updateCharacter("Trouble", full);
+                App.UI.Inputs.TroubleDetail.focus();
+            }
+        },
+
         saveHero: () => {
             localStorage.setItem(AppData.STORAGE_KEY, JSON.stringify(currentCharacter));
             AppController.showStatus("Saved.");
@@ -267,7 +379,6 @@ class AppController {
         },
 
         updateApproach: (a, v) => {
-            console.log("updateApproach", a, v); // DEBUG:
             currentCharacter.ApproachValues[a] = parseInt(v);
             AppController.updateJSON();
         },
@@ -367,12 +478,26 @@ class AppController {
     }
 
     static renderApproaches() {
-        UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => `
-            <div class="approach-row">
-                <label>${appr}</label>
-                <input type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="controller.Handlers.updateApproach('${appr}', this.value)">
-            </div>
-        `).join("");
+        const identifiers = [
+            "approach-a-input",
+            "approach-b-input",
+            "approach-c-input",
+            "approach-d-input",
+            "approach-e-input",
+            "approach-f-input",
+        ];
+
+        let index = 0;
+        UIHelper.GetElement("approach-list").innerHTML = currentCharacter.Config.Approaches.map((appr) => {
+            const html = `
+                <div class="approach-row">
+                    <label>${appr}</label>
+                    <input id="${identifiers[index]}" type="number" value="${currentCharacter.ApproachValues[appr] || 0}" min="0" max="5" onchange="controller.Handlers.updateApproach('${appr}', this.value)">
+                </div>
+            `
+            index++;
+            return html;
+        }).join("");
     }
 
     static renderLists() {

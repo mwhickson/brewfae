@@ -23,6 +23,10 @@
 		padding: 2px 0 !important;
 	}
 
+	input[type='number'] {
+		appearance: textfield;
+	}
+
 	#app {
 		border: none;
 		max-width: 100% !important;

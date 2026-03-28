@@ -2,6 +2,7 @@
     color-scheme: light dark;
     --accent: light-dark(black, white);
     --bg: light-dark(white, black);
+    --bg2: light-dark(#ccc, #333);
     --bg-print: light-dark(white, black);
     --border: light-dark(#eee, #444);
     --danger: light-dark(#900, #c00);
@@ -32,8 +33,21 @@ button {
     padding: 10px;
 }
 
+button:hover {
+	cursor: pointer;
+}
+
 button.danger {
     background: var(--danger);
+}
+
+button.small {
+	background: var(--bg2);
+	color: var(--text2);
+	font-size: 0.6rem;
+	margin: 0 2px;
+	padding: 3px 5px;
+	/*text-transform: uppercase;*/
 }
 
 h2 {
