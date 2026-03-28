@@ -1,40 +1,45 @@
 @media print {
-    @page {
-        font-size: 11pt;
-        margin: 1cm;
-        size: landscape;
-    }
+	@page {
+		font-size: 11pt;
+		margin: 1cm;
+		size: landscape;
+	}
 
-    body {
-        background: var(--bg-print);
-        padding: 0;
-    }
+	::placeholder {
+		color: transparent !important;
+		text-shadow: none !important;
+	}
 
-    input,
-    textarea {
-        background: transparent !important;
-        border: none !important;
-        color: black !important;
-        padding: 2px 0 !important;
-    }
+	body {
+		background: var(--bg-print);
+		padding: 0;
+	}
 
-    #app {
-        border: none;
-        max-width: 100% !important;
-        padding: 0;
-        width: 100%;
-    }
+	input,
+	textarea {
+		background: transparent !important;
+		border: none !important;
+		color: black !important;
+		padding: 2px 0 !important;
+	}
 
-    .approach-row {
-        background: none !important;
-        border-bottom: 1px solid var(--border);
-    }
+	#app {
+		border: none;
+		max-width: 100% !important;
+		padding: 0;
+		width: 100%;
+	}
 
-    .no-print {
-        display: none !important;
-    }
+	.approach-row {
+		background: none !important;
+		border-bottom: 1px solid var(--border);
+	}
 
-    .print-only {
-        display: block !important;
-    }
+	.no-print {
+		display: none !important;
+	}
+
+	.print-only {
+		display: block !important;
+	}
 }
